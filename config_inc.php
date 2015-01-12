@@ -4,11 +4,14 @@ if(!TYPO3_MODE) { die('This script cannot be called directly.'); }
 
 function mwimagemap_getitems() {
 	if (TYPO3_MODE == 'BE') {
-	  require_once (PATH_t3lib.'class.t3lib_userauth.php');
-	  require_once (PATH_t3lib.'class.t3lib_userauthgroup.php');
-	  require_once (PATH_t3lib.'class.t3lib_beuserauth.php');
-		require_once (PATH_t3lib.'class.t3lib_tsfebeuserauth.php');
-		$BE_USER = t3lib_div::makeInstance('t3lib_tsfeBeUserAuth');
+		//require_once (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('core') . 'Classes/Authentication/AbstractUserAuthentication.php');
+	 	//require_once (PATH_typo3.'class.t3lib_userauthgroup.php');
+	  	//require_once (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('core') . 'Classes/Authentication/BackendUserAuthentication.php');
+		//require_once (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('backend') . 'Classes/FrontendBackendUserAuthentication.php');
+
+		//if(!is_object($GLOBALS['TYPO3_DB'])) return; // case: called from ext_tables.php
+
+		$BE_USER = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Backend\FrontendBackendUserAuthentication'); /** @var $BE_USER  \TYPO3\CMS\Backend\FrontendBackendUserAuthentication */
 		$BE_USER->start();
 		$BE_USER->unpack_uc('');
 		if ($BE_USER->user['uid']) { $BE_USER->fetchGroupData(); }
@@ -34,7 +37,6 @@ function mwimagemap_getitems() {
 				$opt .= '</numIndex>'."\n";
 			}
 		}
-		unset($BE_USER);
 		return $opt;
 	}
 }

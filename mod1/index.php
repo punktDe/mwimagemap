@@ -27,38 +27,46 @@
  * @author	Michael Perlbach <info@mikelmade.de>
  */
 
+
 ini_set('error_reporting', 'E_ALL ^ E_NOTICE');
 
 session_start();
+
+
 	// DEFAULT initialization of a module [BEGIN]
 unset($MCONF);
 require ('conf.php');
+
 require ($GLOBALS['BACK_PATH'].'init.php');
-require ($GLOBALS['BACK_PATH'].'template.php');
+// require ($GLOBALS['BACK_PATH'].'template.php');
 $GLOBALS['LANG']->includeLLFile('EXT:mwimagemap/mod1/locallang_mod.xml');
 
-
-if (@is_dir(PATH_site.'typo3/sysext/cms/tslib/')) { define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/'); }
-elseif (@is_dir(PATH_site.'tslib/')) { define('PATH_tslib', PATH_site.'tslib/'); }
-else {
-	// define path to tslib/ here:
+/*
+if (@is_dir(PATH_site.'typo3/sysext/cms/tslib/')) {
+	define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/'); }
+elseif (@is_dir(PATH_site.'tslib/')) {
+	define('PATH_tslib', PATH_site.'tslib/');
+} else {
+	//define path to tslib/ here:
 	$configured_tslib_path = '';
 
-	// example: $configured_tslib_path = '/var/www/mysite/typo3/sysext/cms/tslib/';
+	//example: $configured_tslib_path = '/var/www/mysite/typo3/sysext/cms/tslib/';
 	define('PATH_tslib', $configured_tslib_path);
 }
 
 if (PATH_tslib=='') { die('Cannot find tslib/. Please set path by defining $configured_tslib_path in '.basename(PATH_thisScript).'.'); }
 
-require_once (PATH_t3lib.'class.t3lib_scbase.php');
-require_once (PATH_tslib.'class.tslib_content.php');
+*/
+//require_once (PATH_t3lib.'class.t3lib_scbase.php');
+//require_once (PATH_tslib.'class.tslib_content.php');
+
 require_once (t3lib_extMgm::extPath('mwimagemap').'constants.php');
 $GLOBALS['BE_USER']->modAccess($MCONF, 1);	// This checks permissions and exits if the users has no permission for entry.
 
 define('UPLOAD_DIR', 'uploads/tx_mwimagemap/');
 define('MODULE_DIR', t3lib_extMgm::extPath('mwimagemap').'mod1/');
 
-class tx_mwimagemap_module1 extends t3lib_SCbase {
+class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	var $pageinfo;
 	var $extConf;
 	var $impath;
@@ -1407,7 +1415,8 @@ class tx_mwimagemap_module1 extends t3lib_SCbase {
 	}
 
 	function createLinkToBrowseLinks($form, $field) {
-		$browseLinksFile = $this->doc->backPath.'browse_links.php';
+		//$browseLinksFile = $this->doc->backPath.'browse_links.php';
+		$browseLinksFile = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('wizard_element_browser');
 		$params = array(
 			'act' => 'page',
 			'mode' => 'wizard',
@@ -1663,7 +1672,6 @@ class tx_mwimagemap_module1 extends t3lib_SCbase {
 		return $formattedNumber;
 	}
 }
-	
 // Make instance:
 $SOBE = t3lib_div::makeInstance('tx_mwimagemap_module1');
 $SOBE->init();
@@ -1673,9 +1681,5 @@ foreach($SOBE->include_once as $INC_FILE)	include_once($INC_FILE);
 
 $SOBE->main();
 $SOBE->printContent();
-/*
-if (defined('TYPO3_MODE') && $GLOBALS['$TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/mwimagemap/mod1/index.php'])	{
-	include_once($GLOBALS['$TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/mwimagemap/mod1/index.php']);
-}
-*/
+
 ?>

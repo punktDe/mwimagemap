@@ -27,7 +27,6 @@
  * @author	Michael Perlbach <info@mikelmade.de>
  */
 
-require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('mwimagemap').'constants.php');
 
 class tx_mwimagemap_pi1 extends tslib_pibase {
@@ -43,6 +42,8 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 	 */
 	function main($content, $conf)	{
 		global $CLIENT;
+
+
 		$this->conf = $conf;
 		$this->pi_setPiVarDefaults();
 		$this->pi_loadLL();
@@ -92,9 +93,11 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 		$this->markerArray['###MAP_TITLE###'] = $this->map[0]; // alternative text for image used in imagemap
 		$this->def_link = $this->def_param = '';
 
+
 		if ( ! ( $this->area_res = $db->sql_query('SELECT id, type, link, param, description, fe_visible, fe_bordercolor, fe_borderthickness, fe_altfile FROM tx_mwimagemap_area WHERE mid = '.$this->map_id) ) ) {
 			return;
 	 }
+
 
 		$this->cbox = FALSE;
 		$this->borderoptions = array();
@@ -245,7 +248,6 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 				break;
 			}
 		}
-
 		// if no frontend borders and no mouseovers were set, don't use overlay.
 		if(strlen($this->map[3]) == 0 && strlen($this->markerArray['###ROIMAGES###']) == 0) {
 			$this->overlay = $this->cObj->getSubpart($this->template, '###NON_OVERLAY###' );
