@@ -19,6 +19,7 @@ class tx_mwimagemap {
 			foreach((array) $FILEMOUNTS as $val ) {
 				/* Juergen Kussmann: corrected check of filename. */
 				$filemountDir = substr($val['path'], strlen(PATH_site));
+
 				if (!empty($filemountDir) && preg_match('/^'.preg_quote($filemountDir, '/').'/', $row[2])) {
 					$params['items'][] = array($row[1], $row[0].';'.PATH_site.$row[2].$row[3].';'.$row[3]);
 					break;
