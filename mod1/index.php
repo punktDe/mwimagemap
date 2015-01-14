@@ -603,14 +603,14 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				if ( ! $db->exec_INSERTquery( 'tx_mwimagemap_contentpopup',
 				array( 'aid' => $area_id,
 				'active' => $active,
-				'content_id' => t3lib_div::_GP('cbid'),
-				'popup_width' => t3lib_div::_GP('cb_width'),
-				'popup_height' => t3lib_div::_GP('cb_height'),
-				'popup_x' => t3lib_div::_GP('cb_x'),
-				'popup_y' => t3lib_div::_GP('cb_y'),
-				'popup_bordercolor' => t3lib_div::_GP('cb_bcol'),
-				'popup_borderwidth' => t3lib_div::_GP('cb_borderthickness'),
-				'popup_backgroundcolor' => t3lib_div::_GP('cb_bgcol')
+				'content_id' => intval(t3lib_div::_GP('cbid')),
+				'popup_width' => intval(t3lib_div::_GP('cb_width')),
+				'popup_height' => intval(t3lib_div::_GP('cb_height')),
+				'popup_x' => intval(t3lib_div::_GP('cb_x')),
+				'popup_y' => intval(t3lib_div::_GP('cb_y')),
+				'popup_bordercolor' => t3lib_div::_GP('cb_bcol') || '',
+				'popup_borderwidth' => intval(t3lib_div::_GP('cb_borderthickness')),
+				'popup_backgroundcolor' => t3lib_div::_GP('cb_bgcol') || ''
 				) ) ) {
 					$this->err .= 'edit: sql_error: '.$db->sql_error().'<br />';
 					break;
