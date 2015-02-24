@@ -79,15 +79,15 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 		$this->canvas = 'canvas'.$this->ov_ext;
 		$picsize = getimagesize(PATH_site.$this->map[2].$this->map[1]);
 		
-		$this->markerArray['###MAP###'] = $this->map[2].$this->map[1];
-		$this->markerArray['###MAPCANVAS###'] = 'typo3conf/ext/mwimagemap/pi1/'.$this->canvas;
+		$this->markerArray['###MAP###'] = $GLOBALS['TSFE']->absRefPrefix.$this->map[2].$this->map[1];
+		$this->markerArray['###MAPCANVAS###'] = $GLOBALS['TSFE']->absRefPrefix.'typo3conf/ext/mwimagemap/pi1/'.$this->canvas;
 		$this->markerArray['###IMAGE_WIDTH###'] = $picsize[0];
 		$this->markerArray['###IMAGE_HEIGHT###'] = $picsize[1];
 		
 		if(strlen($this->map[3]) != 0) {
 			$this->map[3] = str_replace('.png', $this->ov_ext, $this->map[3]);
 			$this->map[3] = str_replace('.gif', $this->ov_ext, $this->map[3]);
-			$this->markerArray['###MAPCANVAS###'] = 'uploads/tx_mwimagemap/'.$this->map[3];
+			$this->markerArray['###MAPCANVAS###'] = $GLOBALS['TSFE']->absRefPrefix.'uploads/tx_mwimagemap/'.$this->map[3];
 		}
 		
 		$this->markerArray['###MAP_TITLE###'] = $this->map[0]; // alternative text for image used in imagemap
@@ -122,7 +122,7 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 				$this->area_row[8] = str_replace('.gif', $this->ov_ext, $this->area_row[8]);
 				if(file_exists(PATH_site.'uploads/tx_mwimagemap/'.$this->area_row[8])) {
 					$this->defimg = '';
-					$this->markerArray['###ROIMAGES###'] .= "\n".'<img src="uploads/tx_mwimagemap/'.$this->area_row[8].'" id="tx_mwimagemap_altfefile_'.$this->area_row[0].'" alt="" usemap="#map_'.$this->cObj->data['uid'].'" style="border:0px;visibility:hidden;display:none;" />';
+					$this->markerArray['###ROIMAGES###'] .= "\n".'<img src="'.$GLOBALS['TSFE']->absRefPrefix.'uploads/tx_mwimagemap/'.$this->area_row[8].'" id="tx_mwimagemap_altfefile_'.$this->area_row[0].'" alt="" usemap="#map_'.$this->cObj->data['uid'].'" style="border:0px;visibility:hidden;display:none;" />';
 					
 					$this->romov	= 'Javascript:mwimagemap_changearea(\'tx_mwimagemap_img_'.$this->cObj->data['uid'].'\',\'tx_mwimagemap_altfefile_'.$this->area_row[0].'\'); ';
 					if(strlen($this->defimg) != 0) {
@@ -130,12 +130,12 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 					}
 					
 					if(strlen($this->romov) > 0) { $this->romov = 'onmouseover="'.$this->romov; }
-					$this->xmap = (strlen($this->map[3]) != 0) ? 'uploads/tx_mwimagemap/'.$this->map[3] : 'typo3conf/ext/mwimagemap/pi1/'.$this->canvas;
+					$this->xmap = $GLOBALS['TSFE']->absRefPrefix.(strlen($this->map[3]) != 0) ? 'uploads/tx_mwimagemap/'.$this->map[3] : 'typo3conf/ext/mwimagemap/pi1/'.$this->canvas;
 					
 					// If an area was preselected by a GET-parameter, show this area as default.
 					if($this->getarea == $this->area_row[0]) {
-						$this->markerArray['###MAPCANVAS###'] = 'uploads/tx_mwimagemap/'.$this->area_row[8];
-						$this->xmap = 'uploads/tx_mwimagemap/'.$this->area_row[8];
+						$this->markerArray['###MAPCANVAS###'] = $GLOBALS['TSFE']->absRefPrefix.'uploads/tx_mwimagemap/'.$this->area_row[8];
+						$this->xmap = $GLOBALS['TSFE']->absRefPrefix.'uploads/tx_mwimagemap/'.$this->area_row[8];
 					}
 					$this->romout = 'onmouseout="Javascript:mwimagemap_resetarea(\'tx_mwimagemap_img_'.$this->cObj->data['uid'].'\',\''.$this->xmap.'\'); ';
 					
