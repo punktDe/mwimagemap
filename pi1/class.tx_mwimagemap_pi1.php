@@ -50,7 +50,7 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 		$this->pi_USER_INT_obj=0;
 		$this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['mwimagemap']);
 		$this->title	 = $this->extConf['fe_title'];
-		$this->getarea = t3lib_div::_GP('mwi_area');
+		$this->getarea = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mwi_area');
 		$this->pi_initPIflexForm();
 		if ( ! ( $this->map_id = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'imagemap') ) ) { return; }
 
@@ -258,7 +258,7 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 		
 		if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['mwimagemap']['hook'])) {
 			foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['mwimagemap']['hook'] as $_classRef) {
-				$_procObj = &t3lib_div::getUserObj($_classRef);
+				$_procObj = &\TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj($_classRef);
 				$_procObj->additionalMarkerProcessor($this);
 			}
 		}
