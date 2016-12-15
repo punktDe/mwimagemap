@@ -27,44 +27,19 @@
  * @author	Michael Perlbach <info@mikelmade.de>
  */
 
+use \TYPO3\CMS\Backend\Utility\BackendUtility;
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
 
-ini_set('error_reporting', 'E_ALL ^ E_NOTICE');
-
-session_start();
-
-
-	// DEFAULT initialization of a module [BEGIN]
-unset($MCONF);
-require ('conf.php');
-
-require ($GLOBALS['BACK_PATH'].'init.php');
-// require ($GLOBALS['BACK_PATH'].'template.php');
-$GLOBALS['LANG']->includeLLFile('EXT:mwimagemap/mod1/locallang_mod.xml');
-
-/*
-if (@is_dir(PATH_site.'typo3/sysext/cms/tslib/')) {
-	define('PATH_tslib', PATH_site.'typo3/sysext/cms/tslib/'); }
-elseif (@is_dir(PATH_site.'tslib/')) {
-	define('PATH_tslib', PATH_site.'tslib/');
-} else {
-	//define path to tslib/ here:
-	$configured_tslib_path = '';
-
-	//example: $configured_tslib_path = '/var/www/mysite/typo3/sysext/cms/tslib/';
-	define('PATH_tslib', $configured_tslib_path);
+if (!isset($MCONF)) {
+    require('conf.php');
 }
 
-if (PATH_tslib=='') { die('Cannot find tslib/. Please set path by defining $configured_tslib_path in '.basename(PATH_thisScript).'.'); }
+$GLOBALS['LANG']->includeLLFile('EXT:mwimagemap/mod1/locallang_mod.xml');
 
-*/
-//require_once (PATH_t3lib.'class.t3lib_scbase.php');
-//require_once (PATH_tslib.'class.tslib_content.php');
-
-require_once (t3lib_extMgm::extPath('mwimagemap').'constants.php');
-$GLOBALS['BE_USER']->modAccess($MCONF, 1);	// This checks permissions and exits if the users has no permission for entry.
+require_once (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('mwimagemap').'constants.php');
 
 define('UPLOAD_DIR', 'uploads/tx_mwimagemap/');
-define('MODULE_DIR', t3lib_extMgm::extPath('mwimagemap').'mod1/');
+define('MODULE_DIR', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('mwimagemap').'mod1/');
 
 class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	var $pageinfo;
@@ -76,7 +51,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	 */
 	function init()	{
 		parent::init();
-		$this->cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
+		$this->cObj = GeneralUtility::makeInstance(TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer::class);
 	}
 
 	/**
@@ -96,11 +71,11 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$this->transparent = '';
 		$this->impath = $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_path'];
 		if($GLOBALS['TYPO3_CONF_VARS']['GFX']['im_version_5'] == 'gm') { $this->impath .= 'gm '; }
-		$path = substr(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id'), strlen(PATH_site));
+		$path = substr(GeneralUtility::_GP('id'), strlen(PATH_site));
 
 		// Draw the header.
-		$this->doc = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance("mediumDoc");
-		$this->doc->backPath = $GLOBALS['BACK_PATH'];
+		$this->doc = GeneralUtility::makeInstance(\TYPO3\CMS\Backend\Template\DocumentTemplate::class);
+		$this->doc->backPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extRelPath('mwimagemap');
 
 		// JavaScript
 		$this->doc->JScode = '
@@ -108,7 +83,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				script_ended = 0;
 				function jumpToUrl(URL)	{ document.location = URL; }
 			</script>
-			<script type="text/javascript" src="js/functions.js"></script>';
+			<script type="text/javascript" src="/typo3conf/ext/mwimagemap/mod1/js/functions.js"></script>';
 			
 		$this->doc->postCode='
 			<script language="javascript" type="text/javascript">
@@ -134,22 +109,23 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					document.getElementById(\'cbwarning\').style.display = \'none\';
 				}	
 			</script>
-			<link rel="stylesheet" type="text/css" href="colpicker/js_color_picker_v2.css" media="screen" />
+			<link rel="stylesheet" type="text/css" href="/typo3conf/ext/mwimagemap/mod1/colpicker/js_color_picker_v2.css" media="screen" />
 			<style type="text/css"> /*<![CDATA[*/ <!-- 
 			body { padding-left:20px; }
 			--> /*]]>*/
 			</style>';
 		// create the temporary folder for thumbnail-images if it doesn't exist
 		if (!is_dir(PATH_site.'typo3temp/tx_mwimagemap/')) {
-			\TYPO3\CMS\Core\Utility\GeneralUtility::mkdir(PATH_site.'typo3temp/tx_mwimagemap/');
+			GeneralUtility::mkdir(PATH_site.'typo3temp/tx_mwimagemap/');
 		}
 
-		$headerSection = $this->doc->getHeader('pages', $this->pageinfo, $this->pageinfo['_thePath']).'<br />'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.php:labels.path').': '.\TYPO3\CMS\Core\Utility\GeneralUtility::fixed_lgd_cs($path, 50);
-			
+        // $GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.xlf:ExtDirect.namespaceError')
+        $headerSection = $this->doc->getHeader('pages', $this->pageinfo, $this->pageinfo['_thePath']).'<br />'.$GLOBALS['LANG']->sL('LLL:EXT:lang/locallang_core.xlf:labels.path').': '.GeneralUtility::fixed_lgd_cs($path, 50);
+
 		$this->content.=$this->doc->startPage($GLOBALS['LANG']->getLL("title"));
 		$this->content.=$this->doc->header($GLOBALS['LANG']->getLL("title"));
 		$this->content.=$this->doc->spacer(5);
-		$this->content.= $this->doc->section('', $this->doc->funcMenu($headerSection, t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])));
+		$this->content.= $this->doc->section('', $this->doc->funcMenu($headerSection, BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])));
 		$this->content.=$this->doc->divider(5);
 
 		$carr = explode('<body', $this->content);
@@ -158,7 +134,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$bodytag = '<body'.$btag;
 
 		// Render content:
-		if ( \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('area_page') ) { $this->areaContent(); }
+		if ( GeneralUtility::_GP('area_page') ) { $this->areaContent(); }
 		else { $this->mapContent(); }
 
 		// ShortCut
@@ -197,10 +173,10 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		* Generates the module content
 		*/
 	function mapContent() {
-		$path = substr(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id'), strlen(PATH_site));
+		$path = substr(GeneralUtility::_GP('id'), strlen(PATH_site));
 		
-		if(preg_match('/\:/', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id'))) {
-			$parr = explode(':', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id'));
+		if(preg_match('/\:/', GeneralUtility::_GP('id'))) {
+			$parr = explode(':', GeneralUtility::_GP('id'));
 			$path = 'fileadmin'.$parr[1];
 		}
 		
@@ -223,9 +199,9 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$list_part = $this->cObj->getSubpart( $template, '###LIST_PART###' );
 		$list_item = $this->cObj->getSubpart( $template, '###LIST_ITEM###' );
 
-		switch ( \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('action') ) {
+		switch ( GeneralUtility::_GP('action') ) {
 			case 'add':
-				if ( trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('name')) === '' ) {
+				if ( trim(GeneralUtility::_GP('name')) === '' ) {
 					if ( ! ( $res = $db->exec_SELECTquery('count(*)', 'tx_mwimagemap_map', '') ) || ! ( $row = $db->sql_fetch_row($res) ) ) {
 						if ( $_FILES['usr_file']['tmp_name'] ) { unlink( $_FILES['usr_file']['tmp_name'] ); }
 						$content .= 'exec_SELECT sql_error: '.$db->sql_error().'<br />';
@@ -233,7 +209,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					}
 					$name = 'map_'.($row[0]+1);
 				}
-				else { $name = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('name')); }
+				else { $name = trim(GeneralUtility::_GP('name')); }
 				if ( is_uploaded_file($_FILES['usr_file']['tmp_name']) ) {
 					if ( ! $_FILES['usr_file']['name'] || $_FILES['usr_file']['error'] ) {
 						if ( $_FILES['usr_file']['tmp_name'] ) { unlink( $_FILES['usr_file']['tmp_name'] ); }
@@ -272,12 +248,12 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						unlink($_FILES['usr_file']['tmp_name']);
 						break;
 					}
-					if ( is_file(PATH_site . $path . $file) ) { \TYPO3\CMS\Core\Utility\GeneralUtility::fixPermissions(PATH_site . $path . $file); }
+					if ( is_file(PATH_site . $path . $file) ) { GeneralUtility::fixPermissions(PATH_site . $path . $file); }
 					$new_file = TRUE;
 				}
-				elseif ( \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('use_pic') ) {
+				elseif ( GeneralUtility::_GP('use_pic') ) {
 					$new_file = FALSE;
-					if ( ! ( $res = $db->exec_SELECTquery('file', 'tx_mwimagemap_map', 'id='.intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('use_pic')).' AND folder='.$db->fullQuoteStr($path, 'tx_mwimagemap_map') ) ) ) {
+					if ( ! ( $res = $db->exec_SELECTquery('file', 'tx_mwimagemap_map', 'id='.intval(GeneralUtility::_GP('use_pic')).' AND folder='.$db->fullQuoteStr($path, 'tx_mwimagemap_map') ) ) ) {
 						$content .= 'exec_SELECT sql_error:'.$db->sql_error().'<br />';
 						break;
 					}
@@ -287,9 +263,9 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					}
 					$file = $row[0];
 				}
-				elseif ( \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('use_file') ) {
+				elseif ( GeneralUtility::_GP('use_file') ) {
 					$new_file = FALSE;
-					if ( is_file(PATH_site . $path . \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('use_file')) ) { $file = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('use_file'); }
+					if ( is_file(PATH_site . $path . GeneralUtility::_GP('use_file')) ) { $file = GeneralUtility::_GP('use_file'); }
 					else {
 						$content .= $GLOBALS['LANG']->getLL('nofile');
 						break;
@@ -305,7 +281,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					break;
 				}
 				$mid = $db->sql_insert_id();
-				$use_map = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('use_map'));
+				$use_map = intval(GeneralUtility::_GP('use_map'));
 				if ( $new_file ) { $this->create_thumb($file, $path); }
 				if ( $use_map != 0 ) {
 					if ( ! ( $res = $db->exec_SELECTquery('*', 'tx_mwimagemap_area', 'mid = '.$use_map) ) ) {
@@ -339,33 +315,33 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			break;
 
 			case 'del':
-				$this->deleteFePics(intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id')));
-				if ( ! ( $res = $db->exec_SELECTquery( 'file', 'tx_mwimagemap_map', 'id = '.intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id')).' AND folder='.$db->fullQuoteStr($path, 'tx_mwimagemap_map') ) )
+				$this->deleteFePics(intval(GeneralUtility::_GP('map_id')));
+				if ( ! ( $res = $db->exec_SELECTquery( 'file', 'tx_mwimagemap_map', 'id = '.intval(GeneralUtility::_GP('map_id')).' AND folder='.$db->fullQuoteStr($path, 'tx_mwimagemap_map') ) )
 					|| ! ( $row = $db->sql_fetch_row($res) ) ) {
-					$content .= 'Fatal db error, deleting \''.\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id').'\' not successfull<br />sql_error:'.$db->sql_error().'<br />';
+					$content .= 'Fatal db error, deleting \''.GeneralUtility::_GP('map_id').'\' not successfull<br />sql_error:'.$db->sql_error().'<br />';
 					break;
 				}
 				if ( ! ( $res = $db->exec_SELECTquery( 'id', 'tx_mwimagemap_map', 'file = \''.$row[0].'\' AND folder = '.$db->fullQuoteStr($path, 'tx_mwimagemap_map') ) ) ) {
-					$content .= 'Fatal db error, deleting \''.\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id').'\' not successfull<br />sql_error:'.$db->sql_error().'<br />';
+					$content .= 'Fatal db error, deleting \''.GeneralUtility::_GP('map_id').'\' not successfull<br />sql_error:'.$db->sql_error().'<br />';
 					break;
 				}
-				if ( $db->sql_num_rows($res) == 1 && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('del_unused') == 'on' ) {
+				if ( $db->sql_num_rows($res) == 1 && GeneralUtility::_GP('del_unused') == 'on' ) {
 					unlink(PATH_site . $path . $row[0]);
 					unlink(PATH_site.'typo3temp/tx_mwimagemap/'.md5($path.$row[0]));
 				}
-				if (	! ( $res = $db->exec_SELECTquery('id', 'tx_mwimagemap_area', 'mid = '.intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id')) ) ) ) {
+				if (	! ( $res = $db->exec_SELECTquery('id', 'tx_mwimagemap_area', 'mid = '.intval(GeneralUtility::_GP('map_id')) ) ) ) {
 					$content .= 'db error, sql_error: '.$db->sql_error.'<br />imagemap might be not deleted completly!<br />';
 				}
 				else {
 					while ( $row = $db->sql_fetch_row($res) ) {
 						if ( ! $db->exec_DELETEquery( 'tx_mwimagemap_point', 'aid = '.$row[0] ) ) { $content .= 'sql_error:'.$db->sql_error().'<br />'; }
-						if ( ! $db->exec_DELETEquery( 'tx_mwimagemap_area', 'mid = '.intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id')) ) ) {
+						if ( ! $db->exec_DELETEquery( 'tx_mwimagemap_area', 'mid = '.intval(GeneralUtility::_GP('map_id')) ) ) {
 							$content .= 'sql_error:'.$db->sql_error().'<br />';
 						}
 					}
 				}
 
-				if ( ! $db->exec_DELETEquery('tx_mwimagemap_map', 'id = '.intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id'))) ) { $content .= 'sql_error:'.$db->sql_error().'<br />'; }
+				if ( ! $db->exec_DELETEquery('tx_mwimagemap_map', 'id = '.intval(GeneralUtility::_GP('map_id'))) ) { $content .= 'sql_error:'.$db->sql_error().'<br />'; }
 				$this -> checkFecache();
 			break;
 
@@ -409,12 +385,12 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						unlink($_FILES['usr_file']['tmp_name']);
 						break;
 					}
-					if ( is_file(PATH_site . $path . $afile) ) { \TYPO3\CMS\Core\Utility\GeneralUtility::fixPermissions(PATH_site . $path . $afile); }
+					if ( is_file(PATH_site . $path . $afile) ) { GeneralUtility::fixPermissions(PATH_site . $path . $afile); }
 					$file = $afile;
 				}
-				$name = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('name'));
+				$name = trim(GeneralUtility::_GP('name'));
 				if ( $file != '' ) {
-					if ( ! ( $res = $db->exec_SELECTquery('file', 'tx_mwimagemap_map', 'id = '.intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id')).' AND folder='.$db->fullQuoteStr($path, 'tx_mwimagemap_map') ) ) ) {
+					if ( ! ( $res = $db->exec_SELECTquery('file', 'tx_mwimagemap_map', 'id = '.intval(GeneralUtility::_GP('map_id')).' AND folder='.$db->fullQuoteStr($path, 'tx_mwimagemap_map') ) ) ) {
 						unlink( PATH_site . $path . $_FILES['usr_file']['name'] );
 						$content .= 'exec_SELECT sql_error: '.$db->sql_error().'<br />';
 						break;
@@ -429,14 +405,14 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						$content .= 'exec_SELECT sql_error: '.$db->sql_error().'<br />';
 						break;
 					}
-					if ( $db->sql_num_rows($res) == 1 && \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('del_unused') == 'on' ) { $do_unlink = TRUE; }
+					if ( $db->sql_num_rows($res) == 1 && GeneralUtility::_GP('del_unused') == 'on' ) { $do_unlink = TRUE; }
 					else { $do_unlink = FALSE; }
 				}
 				if ( $name != '' || $file != '' ) {
 					$res = array();
 					if ( $name != '' ) { $res['name'] = $name; }
 					if ( $file != '' ) { $res['file'] = $file; }
-					if ( !$db->exec_UPDATEquery( 'tx_mwimagemap_map', 'id = '.intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id')).' AND folder='.$db->fullQuoteStr($path, 'tx_mwimagemap_map'), $res ) ) {
+					if ( !$db->exec_UPDATEquery( 'tx_mwimagemap_map', 'id = '.intval(GeneralUtility::_GP('map_id')).' AND folder='.$db->fullQuoteStr($path, 'tx_mwimagemap_map'), $res ) ) {
 						unlink( PATH_site . $path . $_FILES['usr_file']['name'] );
 						$content .= 'chg_name sql_error: '.$db->sql_error();
 						break;
@@ -449,7 +425,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						}
 					}
 				}
-				$this->createFePics(intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id')), 0);
+				$this->createFePics(intval(GeneralUtility::_GP('map_id')), 0);
 				$this -> checkFecache();
 				break;
 			}
@@ -467,7 +443,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			$markerArray['###OPTIONS###'] = '';
 			$markerArray['###USE_MAP###'] = $GLOBALS['LANG']->getLL('use_map');
 			$markerArray['###USE_FILE###'] = $GLOBALS['LANG']->getLL('use_file');
-			$markerArray['###PATHID###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+			$markerArray['###PATHID###'] = GeneralUtility::_GP('id');
 
 			$i = 0;
 			$res = $db->exec_SELECTquery('id, file, name', 'tx_mwimagemap_map', 'folder='.$db->fullQuoteStr($path, 'tx_mwimagemap_map') );
@@ -485,10 +461,19 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				
 				$mA['###ID###'] = $row[0];
 				$mA['###NAME###'] = $row[2];
-				$mA['###PATHID###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
-				$mA['###SRC###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL').'typo3temp/tx_mwimagemap/'.md5($path.$row[1]);
-				$mA['###TW###'] = $tw;
-				
+				$mA['###PATHID###'] = GeneralUtility::_GP('id');
+				$mA['###SRC###'] = GeneralUtility::getIndpEnv('TYPO3_SITE_URL').'typo3temp/tx_mwimagemap/'.md5($path.$row[1]);
+                $mA['###TW###'] = $tw;
+
+                // /typo3conf/ext/mwimagemap/mod1/index.php?area_page=1&map_id=###ID###&id=###PATHID###
+                $urlParameters = array(
+                    'area_page' => 1,
+                    'map_id' => $mA['###ID###'],
+                    'id' => $mA['###PATHID###']
+                );
+                $aHref = BackendUtility::getModuleUrl('file_txmwimagemapM1', $urlParameters);
+                $mA['###MODLINK###'] = $aHref;
+
 				$content .= '<td>'.$this->cObj->substituteMarkerArray($list_item, $mA).'</td>';
 				$markerArray['###OPTIONS###'] .= '<option value="'.$row[0].'">'.$row[2].'</option>';
 				$files[] = $row[1];
@@ -531,9 +516,9 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	function areaContent() {
 		$db =& $GLOBALS['TYPO3_DB'];
 		$content = '';
-		$area_id = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('area_id'));
+		$area_id = intval(GeneralUtility::_GP('area_id'));
 		if ( $area_id == 0 ) $area_id = '';
-		$map_id = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('map_id'));
+		$map_id = intval(GeneralUtility::_GP('map_id'));
 		$type_array = array( 'Rectangle', 'Circle', 'Polygon' );
 
 		$template = file_get_contents( MODULE_DIR.'/templates/template_area.html' );
@@ -553,9 +538,9 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
 		$js_part = $this->cObj->getSubpart( $template, '###JS_PART###' );
 
-		switch ( \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('action') ) {
+		switch ( GeneralUtility::_GP('action') ) {
 			case 'add':
-				if ( intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('type')) == MWIM_DEFAULT ) {
+				if ( intval(GeneralUtility::_GP('type')) == MWIM_DEFAULT ) {
 					if ( ! ( $res = $db->exec_SELECTquery('id', 'tx_mwimagemap_area', 'mid = '.$map_id.' AND type ='.MWIM_DEFAULT) ) ) {
 						$this->err .= 'exec_select sql_error: '.$db->sql_error().'<br />';
 						break;
@@ -565,8 +550,8 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						break;
 					}
 				}
-				if ( trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('descript')) === '' ) {
-					if ( intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('type')) == MWIM_DEFAULT ) { $desc = 'default link'; }
+				if ( trim(GeneralUtility::_GP('descript')) === '' ) {
+					if ( intval(GeneralUtility::_GP('type')) == MWIM_DEFAULT ) { $desc = 'default link'; }
 					else {
 						if ( ! ( $res = $db->exec_SELECTquery('count(*)', 'tx_mwimagemap_area', 'mid = '.$map_id) ) || ! ( $row = $db->sql_fetch_row($res) ) ) {
 							$this->err .= 'exec_SELECT sql_error: '.$db->sql_error().'<br />';
@@ -575,10 +560,10 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						$desc = 'area_'.($row[0]+1);
 					}
 				}
-				else { $desc = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('descript')); }
-				$link = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('link'));
+				else { $desc = trim(GeneralUtility::_GP('descript')); }
+				$link = trim(GeneralUtility::_GP('link'));
 				if ( $link === '' ) { $link = '#'; }
-				if ( ! $db->exec_INSERTquery( 'tx_mwimagemap_area', array( 'type' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('type')),
+				if ( ! $db->exec_INSERTquery( 'tx_mwimagemap_area', array( 'type' => intval(GeneralUtility::_GP('type')),
 					'link' => $link, 'description' => $desc, 'mid' => $map_id, 'color' => $this->extConf['def_color1'] ) ) ) {
 					$this->err .= 'add sql_error: '.$db->sql_error().'<br />';
 					break;
@@ -587,7 +572,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					$this->err .= 'sql_insert_id() == '.$area_id.'<br />';
 					break;
 				}
-				switch ( intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('type')) ) {
+				switch ( intval(GeneralUtility::_GP('type')) ) {
 					case MWIM_RECTANGLE:
 					case MWIM_CIRCLE:
 						if ( ! $db->exec_INSERTquery('tx_mwimagemap_point', array( 'aid' => $area_id, 'num' => '0' ) ) || ! $db->exec_INSERTquery('tx_mwimagemap_point', array( 'aid' => $area_id, 'num' => '1' ) ) ) {
@@ -599,18 +584,18 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					break;
 				}
 				
-				$active = (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_active') == 1) ? \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_active') : 0;
+				$active = (GeneralUtility::_GP('cb_active') == 1) ? GeneralUtility::_GP('cb_active') : 0;
 				if ( ! $db->exec_INSERTquery( 'tx_mwimagemap_contentpopup',
 				array( 'aid' => $area_id,
 				'active' => $active,
-				'content_id' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cbid')),
-				'popup_width' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_width')),
-				'popup_height' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_height')),
-				'popup_x' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_x')),
-				'popup_y' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_y')),
-				'popup_bordercolor' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_bcol') || '',
-				'popup_borderwidth' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_borderthickness')),
-				'popup_backgroundcolor' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_bgcol') || ''
+				'content_id' => intval(GeneralUtility::_GP('cbid')),
+				'popup_width' => intval(GeneralUtility::_GP('cb_width')),
+				'popup_height' => intval(GeneralUtility::_GP('cb_height')),
+				'popup_x' => intval(GeneralUtility::_GP('cb_x')),
+				'popup_y' => intval(GeneralUtility::_GP('cb_y')),
+				'popup_bordercolor' => GeneralUtility::_GP('cb_bcol') || '',
+				'popup_borderwidth' => intval(GeneralUtility::_GP('cb_borderthickness')),
+				'popup_backgroundcolor' => GeneralUtility::_GP('cb_bgcol') || ''
 				) ) ) {
 					$this->err .= 'edit: sql_error: '.$db->sql_error().'<br />';
 					break;
@@ -630,14 +615,14 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			break;
 
 			case 'edit':
-				$_SESSION['mwim_blink'] = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('blink'));
+				$_SESSION['mwim_blink'] = intval(GeneralUtility::_GP('blink'));
 				$this->edit_colors( $map_id );
 				if ( ! $area_id	) {
 					$this->err .= 'edit: no area_id!<br />';
 					break;
 				}
 				
-				$desc = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('descript'));
+				$desc = trim(GeneralUtility::_GP('descript'));
 				if ( $desc === '' ) {
 					if ( ! ( $res = $db->exec_SELECTquery('count(*)', 'tx_mwimagemap_area', 'mid = '.$map_id) ) || ! ( $row = $db->sql_fetch_row($res) ) ) {
 						$this->err .= 'edit: exec_SELECT sql_error: '.$db->sql_error().'<br />';
@@ -645,18 +630,18 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					}
 					$desc = 'area_'.($row[0]+1);
 				}
-				$link = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('link'));
+				$link = trim(GeneralUtility::_GP('link'));
 				if ( $link === '' ) { $link = '#'; }
-				$param = str_replace('&quot;', '"', trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('param')));
+				$param = str_replace('&quot;', '"', trim(GeneralUtility::_GP('param')));
 				
-				$fe_bcol = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('fe_bcol');
-				$fe_bths = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('fe_borderthickness');
-				if(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('fe_visible') == 1 || \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('fe_visible') == 2) {
-					if (!preg_match("/^#[a-f0-9]{6}$/i", $fe_bcol) ) { $fe_bcol = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('color'); }
+				$fe_bcol = GeneralUtility::_GP('fe_bcol');
+				$fe_bths = GeneralUtility::_GP('fe_borderthickness');
+				if(GeneralUtility::_GP('fe_visible') == 1 || GeneralUtility::_GP('fe_visible') == 2) {
+					if (!preg_match("/^#[a-f0-9]{6}$/i", $fe_bcol) ) { $fe_bcol = GeneralUtility::_GP('color'); }
 					if(!preg_match("/^[-]?[0-9]+([\.][0-9]+)?$/i", $fe_bths)) { $fe_bths = '1'; }
 				}
 
-				$active = (\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_active') == 1) ? \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_active') : 0;
+				$active = (GeneralUtility::_GP('cb_active') == 1) ? GeneralUtility::_GP('cb_active') : 0;
 				if ( ! ( $res = $db->exec_SELECTquery('count(*)', 'tx_mwimagemap_contentpopup', 'aid = '.$area_id) ) || ! ( $row = $db->sql_fetch_row($res) ) ) {
 						$this->err .= 'edit: exec_SELECT sql_error: '.$db->sql_error().'<br />';
 						break;
@@ -665,14 +650,14 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					if ( ! $db->exec_UPDATEquery( 'tx_mwimagemap_contentpopup', 'aid = '.$area_id,
 					array(
 					'active' => $active,
-					'content_id' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cbid'),
-					'popup_width' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_width'),
-					'popup_height' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_height'),
-					'popup_x' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_x'),
-					'popup_y' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_y'),
-					'popup_bordercolor' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_bcol'),
-					'popup_borderwidth' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_borderthickness'),
-					'popup_backgroundcolor' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_bgcol')
+					'content_id' => GeneralUtility::_GP('cbid'),
+					'popup_width' => GeneralUtility::_GP('cb_width'),
+					'popup_height' => GeneralUtility::_GP('cb_height'),
+					'popup_x' => GeneralUtility::_GP('cb_x'),
+					'popup_y' => GeneralUtility::_GP('cb_y'),
+					'popup_bordercolor' => GeneralUtility::_GP('cb_bcol'),
+					'popup_borderwidth' => GeneralUtility::_GP('cb_borderthickness'),
+					'popup_backgroundcolor' => GeneralUtility::_GP('cb_bgcol')
 					) ) ) {
 						$this->err .= 'edit: sql_error: '.$db->sql_error().'<br />';
 						break;
@@ -682,14 +667,14 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					if ( ! $db->exec_INSERTquery( 'tx_mwimagemap_contentpopup',
 					array( 'aid' => $area_id,
 					'active' => $active,
-					'content_id' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cbid'),
-					'popup_width' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_width'),
-					'popup_height' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_height'),
-					'popup_x' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_x'),
-					'popup_y' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_y'),
-					'popup_bordercolor' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_bcol'),
-					'popup_borderwidth' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_borderthickness'),
-					'popup_backgroundcolor' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('cb_bgcol')
+					'content_id' => GeneralUtility::_GP('cbid'),
+					'popup_width' => GeneralUtility::_GP('cb_width'),
+					'popup_height' => GeneralUtility::_GP('cb_height'),
+					'popup_x' => GeneralUtility::_GP('cb_x'),
+					'popup_y' => GeneralUtility::_GP('cb_y'),
+					'popup_bordercolor' => GeneralUtility::_GP('cb_bcol'),
+					'popup_borderwidth' => GeneralUtility::_GP('cb_borderthickness'),
+					'popup_backgroundcolor' => GeneralUtility::_GP('cb_bgcol')
 					) ) ) {
 						$this->err .= 'edit: sql_error: '.$db->sql_error().'<br />';
 						break;
@@ -699,9 +684,9 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				if ( ! $db->exec_UPDATEquery( 'tx_mwimagemap_area', 'id = '.$area_id,
 				array( 'description' => $desc,
 				'link' => $link,
-				'color' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('color'),
+				'color' => GeneralUtility::_GP('color'),
 				'param' => $param,
-				'fe_visible' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('fe_visible'),
+				'fe_visible' => GeneralUtility::_GP('fe_visible'),
 				'fe_bordercolor' => $fe_bcol,
 				'fe_borderthickness' => $fe_bths
 				) ) ) {
@@ -709,7 +694,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					break;
 				}
 				
-				switch ( intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('type')) ) {
+				switch ( intval(GeneralUtility::_GP('type')) ) {
 					case MWIM_RECTANGLE:
 						$this->err .= $this->edit_rect($area_id);
 					break;
@@ -719,9 +704,9 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					break;
 
 					case MWIM_POLYGON:
-						$_SESSION['mwim_close'] = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('close'));
-						$_SESSION['mwim_spoint'] = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('spoint'));
-						$_SESSION['mwim_epoint'] = intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('epoint'));
+						$_SESSION['mwim_close'] = intval(GeneralUtility::_GP('close'));
+						$_SESSION['mwim_spoint'] = intval(GeneralUtility::_GP('spoint'));
+						$_SESSION['mwim_epoint'] = intval(GeneralUtility::_GP('epoint'));
 						$this->err .= $this->edit_polygon($area_id);
 					break;
 
@@ -733,10 +718,10 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			break;
 
 			case 'move':
-				$x = intval(trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('xmov')));
-				$y = intval(trim(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('ymov')));
+				$x = intval(trim(GeneralUtility::_GP('xmov')));
+				$y = intval(trim(GeneralUtility::_GP('ymov')));
 				if ( !$x && !$y ) { break; }
-				$arr = explode(',', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('areaids'));
+				$arr = explode(',', GeneralUtility::_GP('areaids'));
 				foreach( $arr as $val ) {
 					if ( ! ( $res = $db->exec_SELECTquery('type', 'tx_mwimagemap_area', 'id = '.$val) ) ) {
 						$this->err .= 'exec_select sql_error: '.$db->sql_error().'<br />';
@@ -776,7 +761,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
 		// Write Picture Section to buffer
 		$markerArray['###NAME###'] = $row[0];
-		$markerArray['###SRC###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL'). $row[2] . $row[1];
+		$markerArray['###SRC###'] = GeneralUtility::getIndpEnv('TYPO3_SITE_URL'). $row[2] . $row[1];
 		$markerArray['###AID###'] = $area_id;
 		$markerArray['###MID###'] = $map_id;
 		$markerArray['###TOGGLED###'] = $GLOBALS['LANG']->getLL('toggle down');
@@ -785,7 +770,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$img_size = GetImageSize( PATH_site . $row[2] . $row[1] );
 		$markerArray['###W###'] = $img_size[0];
 		$markerArray['###H###'] = $img_size[1];
-		$markerArray['###PATHID###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+		$markerArray['###PATHID###'] = GeneralUtility::_GP('id');
 		$content .= $this->doc->section($GLOBALS['LANG']->getLL('Picture').':', '<span id="u"></span>'.$this->cObj->substituteMarkerArray($img_part, $markerArray), 0, 1).'<span id="d"></span>';
 		unset( $markerArray );
 
@@ -812,28 +797,28 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 						$markerArray['###FRAME###'] = $this->write_edit_frame( $frame_part, $addcol_part, $area_id );
 						$markerArray['###FEOPTIONS###'] = $this->write_edit_feoptions( $fe_part, $area_id );
 						$markerArray['###TYPE###'] = $GLOBALS['LANG']->getLL('Rectangle');
-						$markerArray['###L_TYPE###'] = '<img id="area_shape_img" src="img/'.$row[2].'_1.gif" alt="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Rectangle').'" title="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Rectangle').'" style="background-color:'.$row[3].'" />';
+						$markerArray['###L_TYPE###'] = '<img id="area_shape_img" src="/typo3conf/ext/mwimagemap/mod1/img/'.$row[2].'_1.gif" alt="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Rectangle').'" title="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Rectangle').'" style="background-color:'.$row[3].'" />';
 					break;
 					
 					case MWIM_CIRCLE:
 						$markerArray['###FRAME###'] = $this->write_edit_frame( $frame_part, $addcol_part, $area_id );
 						$markerArray['###FEOPTIONS###'] = $this->write_edit_feoptions( $fe_part, $area_id );
 						$markerArray['###TYPE###'] = $GLOBALS['LANG']->getLL('Circle');
-						$markerArray['###L_TYPE###'] = '<img	id="area_shape_img" src="img/'.$row[2].'_1.gif" alt="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Circle').'" title="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Circle').'" style="background-color:'.$row[3].'" />';
+						$markerArray['###L_TYPE###'] = '<img	id="area_shape_img" src="/typo3conf/ext/mwimagemap/mod1/img/'.$row[2].'_1.gif" alt="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Circle').'" title="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Circle').'" style="background-color:'.$row[3].'" />';
 					break;
 					
 					case MWIM_POLYGON:
 						$markerArray['###FRAME###'] = $this->write_edit_frame( $frame_part, $addcol_part, $area_id );
 						$markerArray['###FEOPTIONS###'] = $this->write_edit_feoptions( $fe_part, $area_id );
 						$markerArray['###TYPE###'] = $GLOBALS['LANG']->getLL('Polygon');
-						$markerArray['###L_TYPE###'] = '<img id="area_shape_img" src="img/'.$row[2].'_1.gif" alt="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Polygon').'" title="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Polygon').'" style="background-color:'.$row[3].'" />';
+						$markerArray['###L_TYPE###'] = '<img id="area_shape_img" src="/typo3conf/ext/mwimagemap/mod1/img/'.$row[2].'_1.gif" alt="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Polygon').'" title="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('Polygon').'" style="background-color:'.$row[3].'" />';
 					break;
 					
 					case MWIM_DEFAULT:
 						$markerArray['###FRAME###'] = '';
 						$markerArray['###FEOPTIONS###'] = '';
 						$markerArray['###TYPE###'] = $GLOBALS['LANG']->getLL('default');
-						$markerArray['###L_TYPE###'] = '<img id="area_shape_img" src="img/'.$row[2].'_1.gif" alt="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('default').'" title="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('default').'" style="background-color:'.$row[3].'" />';
+						$markerArray['###L_TYPE###'] = '<img id="area_shape_img" src="/typo3conf/ext/mwimagemap/mod1/img/'.$row[2].'_1.gif" alt="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('default').'" title="'.$GLOBALS['LANG']->getLL('Type').': '.$GLOBALS['LANG']->getLL('default').'" style="background-color:'.$row[3].'" />';
 					break;
 					
 					default:
@@ -919,7 +904,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 					default:
 						$markerArray['###TYP_SPECIFIC###'] = '';
 				}
-				$markerArray['###PATHID###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+				$markerArray['###PATHID###'] = GeneralUtility::_GP('id');
 				$markerArray['###L_EDITAREA###'] = $GLOBALS['LANG']->getLL('Edit Link Area:');
 				$markerArray['###L_SHOWOPTIONS###'] = $GLOBALS['LANG']->getLL('show options');
 				$markerArray['###L_HIDEOPTIONS###'] = $GLOBALS['LANG']->getLL('hide options');
@@ -943,7 +928,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$markerArray['###L_ADD###'] = $GLOBALS['LANG']->getLL('Add');
 		$markerArray['###LINK_FUNC###'] = $this->createLinkToBrowseLinks('add_form', 'link');
 		$markerArray['###MID###'] = $map_id;
-		$markerArray['###PATHID###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+		$markerArray['###PATHID###'] = GeneralUtility::_GP('id');
 		$markerArray['###ADDLINKAREA###'] = $GLOBALS['LANG']->getLL('Add Link Area:');
 		$markerArray['###L_SHOWOPTIONS###'] = $GLOBALS['LANG']->getLL('show options');
 		$markerArray['###L_HIDEOPTIONS###'] = $GLOBALS['LANG']->getLL('hide options');
@@ -962,13 +947,13 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			$markerArray['###MOVEX###'] = $GLOBALS['LANG']->getLL('movex');
 			$markerArray['###MOVEY###'] = $GLOBALS['LANG']->getLL('movey');
 			$markerArray['###MOVE###'] = $GLOBALS['LANG']->getLL('move');
-			$markerArray['###PATHID###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+			$markerArray['###PATHID###'] = GeneralUtility::_GP('id');
 			$js_mA['###L_DISCARD###'] = $GLOBALS['LANG']->getLL('discard');
 			$js_mA['###AID###'] = $area_id;
 			$js_mA['###MID###'] = $map_id;
 			$js_mA['###W###'] = $img_size[0];
 			$js_mA['###H###'] = $img_size[1];
-			$js_mA['###PATHID###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
+			$js_mA['###PATHID###'] = GeneralUtility::_GP('id');
 			if ( $area_id ) { $js_mA['###IMGONCLICK###'] = 'imgonclick'; }
 			else						{ $js_mA['###IMGONCLICK###'] = 'is_a_obj'; }
 			$mA['###L_DEL###'] = $GLOBALS['LANG']->getLL('del');
@@ -1000,8 +985,19 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				$mA['###L_TYPE###'] = $GLOBALS['LANG']->getLL('Type');
 				$mA['###L_LINK###'] = $GLOBALS['LANG']->getLL('Link');
 				$mA['###NUM###'] = $i++;
-				$mA['###PATHID###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('id');
-				$mA['###DELETE###'] = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('del');
+				$mA['###PATHID###'] = GeneralUtility::_GP('id');
+				$mA['###DELETE###'] = GeneralUtility::_GP('del');
+
+                // /typo3conf/ext/mwimagemap/mod1/index.php?area_page=1&area_id=###AID###&map_id=###MID###&id=###PATHID###
+                $urlParameters = array(
+                    'area_page' => 1,
+                    'area_id' => $mA['###AID###'],
+                    'map_id' => $mA['###MID###'],
+                    'id' => $mA['###PATHID###']
+                );
+                $aHref = BackendUtility::getModuleUrl('file_txmwimagemapM1', $urlParameters);
+                $mA['###MODLINK###'] = $aHref;
+
 				$markerArray['###ITEMS###'] .= $this->cObj->substituteMarkerArray( $list_item, $mA );
 			}
 			$markerArray['###AID###'] = $area_id;
@@ -1011,6 +1007,16 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			$markerArray['###SELECTEDAREAS###'] = $GLOBALS['LANG']->getLL('selected areas');
 				
 			$content .= $this->cObj->substituteMarkerArray( $list_part, $markerArray );
+
+            // /typo3conf/ext/mwimagemap/mod1/index.php?area_page=1&map_id=###MID###&area_id="+id+"&id=###PATHID###
+            $urlParameters = array(
+                'area_page' => 1,
+                'map_id' => $mA['###MID###'],
+                'id' => $mA['###PATHID###']
+            );
+            $aHref = BackendUtility::getModuleUrl('file_txmwimagemapM1', $urlParameters);
+            $mA['###MODLINK###'] = $aHref;
+
 			$content .= $this->cObj->substituteMarkerArray( $js_part, $js_mA );
 		}
 
@@ -1025,12 +1031,12 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	function edit_rect( $aid ) {
 		$db =& $GLOBALS['TYPO3_DB'];
 		if ( ! $db->exec_UPDATEquery( 'tx_mwimagemap_point', 'aid = '.$aid.' AND num = 0',
-		array( 'x' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('xsize')),
-		'y' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('ysize')) ) ) ) {
+		array( 'x' => intval(GeneralUtility::_GP('xsize')),
+		'y' => intval(GeneralUtility::_GP('ysize')) ) ) ) {
 			return 'edit_rect: sql_error: '.$db->sql_error().'<br />';
 		}
 		if ( ! $db->exec_UPDATEquery( 'tx_mwimagemap_point', 'aid = '.$aid.' AND num = 1',
-		array( 'x' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('xpos')), 'y' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('ypos')) ) ) ) {
+		array( 'x' => intval(GeneralUtility::_GP('xpos')), 'y' => intval(GeneralUtility::_GP('ypos')) ) ) ) {
 			return 'edit_rect: sql_error: '.$db->sql_error().'<br />';
 		}
 			return '';
@@ -1039,12 +1045,12 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	function edit_circle( $aid ) {
 		$db =& $GLOBALS['TYPO3_DB'];
 			
-		if ( ! $db->exec_UPDATEquery( 'tx_mwimagemap_point', 'aid = '.$aid.' AND num = 0', array( 'x' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('radius')) ) ) ) {
+		if ( ! $db->exec_UPDATEquery( 'tx_mwimagemap_point', 'aid = '.$aid.' AND num = 0', array( 'x' => intval(GeneralUtility::_GP('radius')) ) ) ) {
 			return 'edit_circle: sql_error: '.$db->sql_error().'<br />';
 		}
 			
 		if ( ! $db->exec_UPDATEquery( 'tx_mwimagemap_point', 'aid = '.$aid.' AND num = 1',
-		array( 'x' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('xpos')), 'y' => intval(\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('ypos')) ) ) ) {
+		array( 'x' => intval(GeneralUtility::_GP('xpos')), 'y' => intval(GeneralUtility::_GP('ypos')) ) ) ) {
 			return 'edit_circle: sql_error: '.$db->sql_error().'<br />';
 		}
 		return '';
@@ -1056,8 +1062,8 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		if ( ! $db->exec_DELETEquery('tx_mwimagemap_point', 'aid = '.$aid) ) {
 			return 'edit_polygon: exec_DELETE sql_error: '.$db->sql_error();
 		}
-		for ( $i = 1; $i <= \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('polynum'); $i++ ) {
-			if ( ! $db->exec_INSERTquery('tx_mwimagemap_point', array( 'aid' => $aid, 'num' => $i, 'x' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('xpos'.$i), 'y' => \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('ypos'.$i) ) ) ) {
+		for ( $i = 1; $i <= GeneralUtility::_GP('polynum'); $i++ ) {
+			if ( ! $db->exec_INSERTquery('tx_mwimagemap_point', array( 'aid' => $aid, 'num' => $i, 'x' => GeneralUtility::_GP('xpos'.$i), 'y' => GeneralUtility::_GP('ypos'.$i) ) ) ) {
 				return 'edit_polygon exec_INSERT a point sql_error: '.$db->sql_error();
 			}
 		}	
@@ -1067,8 +1073,8 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	function edit_colors( $mid ) {
 		$db =& $GLOBALS['TYPO3_DB'];
 		$extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['mwimagemap']);
-		$addcols = explode(',', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('addcols'));
-		$addcolnames = explode(',', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('addcolnames'));
+		$addcols = explode(',', GeneralUtility::_GP('addcols'));
+		$addcolnames = explode(',', GeneralUtility::_GP('addcolnames'));
 		for($i = 0;$i<count($addcols);$i++) {
 			if(strlen($addcols[$i]) != 0) {
 				if ( ! $db->exec_INSERTquery('tx_mwimagemap_bcolors', array( 'mid' => $mid, 'colorname' => $addcolnames[$i], 'color' => $addcols[$i] ) ) ) {
@@ -1076,8 +1082,8 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				}
 			}
 		}
-		$delcols = explode(',', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delcols'));
-		$delcolnames = explode(',', \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('delcolnames'));
+		$delcols = explode(',', GeneralUtility::_GP('delcols'));
+		$delcolnames = explode(',', GeneralUtility::_GP('delcolnames'));
 		$colname = '#000000';
 		$i = 1;
 		while($i < 11) {
@@ -1189,6 +1195,16 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				if($i != $row[2]) { $mA['###CHECK_FE_VISIBLE'.$i.'###'] = ""; }
 			}
 		}
+
+        // ../../../../typo3/browser.php?mode=db&bparams=
+        $urlParameters = [
+            'mode' => 'db',
+            'bparams' => 'cbid|||tt_content,tt_news|',
+			'thisScriptUrl' => GeneralUtility::linkThisScript()
+        ];
+		$browserLink = BackendUtility::getModuleUrl('wizard_element_browser', $urlParameters);
+        $mA['###BROWSERLINK###'] = $browserLink;
+
 		return $this->cObj->substituteMarkerArray( $tmpl, $mA );
 	}
 			
@@ -1341,7 +1357,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			return '';
 		}
 
-		$ret = '<a href="Javascript:a_toggle(\'points\');"><h3 class="uppercase"><img src="img/minus.gif" border="0" id="pointstoggle" alt="'.$GLOBALS['LANG']->getLL('show options').'" title="'.$GLOBALS['LANG']->getLL('show options').'" /> '.$GLOBALS['LANG']->getLL('editpoint').' </h3></a>
+		$ret = '<a href="Javascript:a_toggle(\'points\');"><h3 class="uppercase"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="pointstoggle" alt="'.$GLOBALS['LANG']->getLL('show options').'" title="'.$GLOBALS['LANG']->getLL('show options').'" /> '.$GLOBALS['LANG']->getLL('editpoint').' </h3></a>
 			<input type="hidden" name="actpoint" id="actpoint" value="" />
 			<table id="points" cellpadding="0" cellspacing="0" style="display:block;border:1px solid #999999; margin:5px 0px 10px 0px; width:100%;">
 				<tr>
@@ -1415,20 +1431,22 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	}
 
 	function createLinkToBrowseLinks($form, $field) {
-		//$browseLinksFile = $this->doc->backPath.'browse_links.php';
-		$browseLinksFile = \TYPO3\CMS\Backend\Utility\BackendUtility::getModuleUrl('wizard_element_browser');
 		$params = array(
 			'act' => 'page',
-			'mode' => 'wizard',
-			'table' => 'tx_mlsurprisecalendar_prizes',
-			'field' => $field,
-			'P[returnUrl]' => \TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(),
+			'P[field]' => $field,
+			'route' => '/wizard/link/browse',
+			'P[md5ID]' => 'ID' . GeneralUtility::shortmd5($field),
+			'P[returnUrl]' => GeneralUtility::linkThisScript(),
 			'P[formName]' => $form,
 			'P[itemName]' => $field,
 			'P[fieldChangeFunc][focus]' => 'focus()',
+			'P[fieldChangeFuncHash]' => GeneralUtility::hmac(serialize(['focus' => 'focus()']))
 		);
-		$linkToScript = \TYPO3\CMS\Core\Utility\GeneralUtility::linkThisUrl($browseLinksFile, $params);
-		$link = '<a href="#" onclick="this.blur(); vHWin=window.open(\''.$linkToScript.'\',\'\',\'height=300,width=500,status=0,menubar=0,scrollbars=1\');vHWin.focus();return false;"><img src="'.$this->doc->backPath.'gfx/link_popup.gif" /></a>'."\n";
+
+		$browseLinksFile = BackendUtility::getModuleUrl('wizard_link' ,$params);
+		
+		$linkToScript = GeneralUtility::linkThisUrl($browseLinksFile, $params);
+		$link = '<a href="#" onclick="this.blur(); vHWin=window.open(\''.$linkToScript.'\',\'\',\'height=300,width=500,status=0,menubar=0,scrollbars=1\');vHWin.focus();return false;"><img src="/typo3conf/ext/mwimagemap/mod1/img/link_popup.gif" /></a>'."\n";
 
 		return $link;
 	}
@@ -1632,8 +1650,8 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			
 		// Delete the main overlay
 		if ( ! ( $res = $db->exec_SELECTquery( 'alt_file', 'tx_mwimagemap_map', 'id = \''.$mid.'\'') ) ) {
-			$content .= 'Fatal db error:<br />sql_error:'.$db->sql_error().'<br />';
-			break;
+			$this->content .= 'Fatal db error:<br />sql_error:'.$db->sql_error().'<br />';
+			return;
 		}
 		if ( $db->sql_num_rows($res) == 1	) { 
 			while ( $row = $db->sql_fetch_row($res) ) {
@@ -1645,8 +1663,8 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 			
 		// Delete the area overlays
 		if ( ! ( $res = $db->exec_SELECTquery( 'fe_altfile', 'tx_mwimagemap_area', 'mid = \''.$mid.'\'') ) ) {
-			$content .= 'Fatal db error:<br />sql_error:'.$db->sql_error().'<br />';
-			break;
+			$this->content .= 'Fatal db error:<br />sql_error:'.$db->sql_error().'<br />';
+			return;
 		}
 		while ( $row = $db->sql_fetch_row($res) ) {
 			if(is_file(PATH_site.'uploads/tx_mwimagemap/'.$row[0])) {
@@ -1657,7 +1675,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 	
 	function checkFecache() {
 		if($this->extConf['fe_clearpagecache'] == '1') {
-			$tce = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('t3lib_TCEmain');
+			$tce = GeneralUtility::makeInstance(\TYPO3\CMS\Core\DataHandling\DataHandler::class);
 			$tce->start(Array(), Array());
 			$tce->clear_cacheCmd('all');
 		}
@@ -1672,13 +1690,10 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		return $formattedNumber;
 	}
 }
+
 // Make instance:
-$SOBE = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tx_mwimagemap_module1');
+$SOBE = GeneralUtility::makeInstance('tx_mwimagemap_module1');
 $SOBE->init();
-
-// Include files?
-foreach($SOBE->include_once as $INC_FILE)	include_once($INC_FILE);
-
 $SOBE->main();
 $SOBE->printContent();
 

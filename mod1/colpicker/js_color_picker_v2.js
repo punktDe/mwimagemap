@@ -14,7 +14,7 @@
 	
 	************************************************************************************************************/	
 
-	var img_path = 'colpicker/img/';
+	var img_path = '/typo3conf/ext/mwimagemap/mod1/colpicker/img/';
 	var MSIE = navigator.userAgent.indexOf('MSIE')>=0?true:false;
 	var navigatorVersion = navigator.appVersion.replace(/.*?MSIE (\d\.\d).*/g,'$1')/1;
 	

@@ -4,7 +4,7 @@ function a_toggle(elm) {
   img   = (document.getElementById(elm).style.display == "none") ? "minus" : "plus";
   alt   = (document.getElementById(elm).style.display == "none") ? hideoptions : showoptions;
   title = (document.getElementById(elm).style.display == "none") ? hideoptions : showoptions;
-  document.getElementById(elm+'toggle').src   = 'img/'+img+'.gif';
+  document.getElementById(elm+'toggle').src   = '/typo3conf/ext/mwimagemap/mod1/img/'+img+'.gif';
   document.getElementById(elm+'toggle').title = title;
   document.getElementById(elm+'toggle').alt   = alt;
   document.getElementById(elm).style.display  = disp;
@@ -32,11 +32,11 @@ function tbg_out(obj) { obj.style.backgroundColor = '#EFEFF4'; }
 
 function tbg_ov2(obj,picid,pictype) {
   tbg_ov(obj);
-  document.getElementById(picid).src = 'img/'+pictype+'_2.gif';
+  document.getElementById(picid).src = '/typo3conf/ext/mwimagemap/mod1/img/'+pictype+'_2.gif';
 }
 function tbg_out2(obj,picid,pictype) {
   tbg_out(obj);
-  document.getElementById(picid).src = 'img/'+pictype+'_1.gif';
+  document.getElementById(picid).src = '/typo3conf/ext/mwimagemap/mod1/img/'+pictype+'_1.gif';
 }
 
 function tbg_ov3(obj) { obj.style.backgroundColor = '#E3E2E2'; }
@@ -91,8 +91,8 @@ function delCol() {
     if(document.getElementById('addcols').value.length != 0) {
       _addcols        = document.getElementById('addcols').value.split(",");
 	    _addcolnames    = document.getElementById('addcolnames').value.split(",");
-	    _newaddcols     = new Array();
-	    _newaddcolnames = new Array();
+	    _newaddcols     = [];
+	    _newaddcolnames = [];
 	    for(i=0;i<_addcols.length;i++) {
 	      if(_addcols[i] != dcol && _addcolnames[i] != dcolname) {
 		      _newaddcols.push(_addcols[i]);
@@ -121,15 +121,15 @@ function delCol() {
 
 //test for valid hex scheme input: 6 characters, 0-9, a-f, A-F
 function validateColor(elm1,elm2,elm3) {
-  i = 0
-  j = 1
-  val = 0	//if val=1, proceed; else, prompt for valid input
+  i = 0;
+  j = 1;
+  val = 0;	//if val=1, proceed; else, prompt for valid input
   textVal = document.getElementById(elm1).value;
 	
  if (textVal.substring(i,j) != "#"){ textVal = "#" + textVal}	//add # if it's not there already
  while (j < textVal.length){
-	  i++
-	  j++
+	  i++;
+	  j++;
 	  if ((textVal.length == 7) && ((textVal.substring(i,j) == 0) || (textVal.substring(i,j) == 1) || (textVal.substring(i,j) == 2) || (textVal.substring(i,j) == 3) || (textVal.substring(i,j) == 4) || (textVal.substring(i,j) == 5) || (textVal.substring(i,j) == 6) || (textVal.substring(i,j) == 7) || (textVal.substring(i,j) == 8) || (textVal.substring(i,j) == 9)) || ((textVal.substring(i,j) == "A") || (textVal.substring(i,j) == "a") || (textVal.substring(i,j) == "B") || (textVal.substring(i,j) == "b") || (textVal.substring(i,j) == "C") || (textVal.substring(i,j) == "c") || (textVal.substring(i,j) == "D") || (textVal.substring(i,j) == "d") || (textVal.substring(i,j) == "E") || (textVal.substring(i,j) == "e") || (textVal.substring(i,j) == "F") || (textVal.substring(i,j) == "f"))){
 	    document.getElementById(elm2).style.backgroundColor = textVal;
 	  }
@@ -200,11 +200,11 @@ function resetFlag() {
 function togglePos() {
   newpos = (tpos == "u") ? "d" : "u";
 	document.getElementById(newpos).appendChild(document.getElementById("mpos"));
-	document.getElementById("mposimg").src   = "img/"+tpos+".gif";
+	document.getElementById("mposimg").src   = "/typo3conf/ext/mwimagemap/mod1/img/"+tpos+".gif";
 	document.getElementById("mposimg").alt   = m_toggle[tpos];
 	document.getElementById("mposimg").title = m_toggle[tpos];
 	tbg_out(document.getElementById("mpos"));
 	tpos = newpos;
 }
 
-imgonclick = function() {;}
+imgonclick = function() {};
