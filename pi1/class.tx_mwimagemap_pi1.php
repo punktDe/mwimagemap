@@ -27,18 +27,22 @@
  * @author	Michael Perlbach <info@mikelmade.de>
  */
 
-require_once(t3lib_extMgm::extPath('mwimagemap').'constants.php');
+require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('mwimagemap').'constants.php');
 
-class tx_mwimagemap_pi1 extends tslib_pibase {
+class tx_mwimagemap_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	var $prefixId = 'tx_mwimagemap_pi1';		// Same as class name
 	var $scriptRelPath = 'pi1/class.tx_mwimagemap_pi1.php';	// Path to this script relative to the extension dir.
 	var $extKey = 'mwimagemap';	// The extension key.
 	var $pi_checkCHash = TRUE;
 	protected $contentboxes = '';
+	protected $imgsize = [];
 	var $add_cbox_css = '';
 
+
 	/**
-	 * Returns the imagemap
+	 * @param $content
+	 * @param $conf
+	 * @return string
 	 */
 	function main($content, $conf)	{
 		global $CLIENT;
@@ -52,7 +56,7 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 		$this->title	 = $this->extConf['fe_title'];
 		$this->getarea = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP('mwi_area');
 		$this->pi_initPIflexForm();
-		if ( ! ( $this->map_id = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'imagemap') ) ) { return; }
+		if ( ! ( $this->map_id = $this->pi_getFFvalue($this->cObj->data['pi_flexform'], 'imagemap') ) ) { return ''; }
 
 		$db = &$GLOBALS['TYPO3_DB'];
 		
@@ -77,12 +81,12 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 		else if($CLIENT['BROWSER'] == 'msie' && $CLIENT['VERSION'] == '6') { $this->ov_ext = '.gif'; }
 		
 		$this->canvas = 'canvas'.$this->ov_ext;
-		$picsize = getimagesize(PATH_site.$this->map[2].$this->map[1]);
+		$this->imgsize = getimagesize(PATH_site.$this->map[2].$this->map[1]);
 		
 		$this->markerArray['###MAP###'] = $this->map[2].$this->map[1];
 		$this->markerArray['###MAPCANVAS###'] = 'typo3conf/ext/mwimagemap/pi1/'.$this->canvas;
-		$this->markerArray['###IMAGE_WIDTH###'] = $picsize[0];
-		$this->markerArray['###IMAGE_HEIGHT###'] = $picsize[1];
+		$this->markerArray['###IMAGE_WIDTH###'] = $this->imgsize[0];
+		$this->markerArray['###IMAGE_HEIGHT###'] = $this->imgsize[1];
 		
 		if(strlen($this->map[3]) != 0) {
 			$this->map[3] = str_replace('.png', $this->ov_ext, $this->map[3]);
@@ -95,7 +99,7 @@ class tx_mwimagemap_pi1 extends tslib_pibase {
 
 
 		if ( ! ( $this->area_res = $db->sql_query('SELECT id, type, link, param, description, fe_visible, fe_bordercolor, fe_borderthickness, fe_altfile FROM tx_mwimagemap_area WHERE mid = '.$this->map_id) ) ) {
-			return;
+			return '';
 	 }
 
 

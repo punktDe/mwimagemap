@@ -23,9 +23,9 @@ function add_point()
 	{
     var str = '<input name="hidden" type="hidden" id="persistent'+real_pos+'" value="0" />'
     +'<div id="pt_div'+real_pos+'" style="padding-bottom:7px;font-weight:bold;">'+pt_num_txt+real_pos+':</div>'
-    +'<div style="padding-bottom:5px;white-space:nowrap;"> <img src="img/pencil.gif" id="rpoly'+real_pos+'" width="14" height="14" onClick="myrpoly('+real_pos+'); objs[selectedid].reset_dom();">&nbsp;&nbsp;&nbsp;&nbsp;'
+    +'<div style="padding-bottom:5px;white-space:nowrap;"> <img src="/typo3conf/ext/mwimagemap/mod1/img/pencil.gif" id="rpoly'+real_pos+'" width="14" height="14" onClick="myrpoly('+real_pos+'); objs[selectedid].reset_dom();">&nbsp;&nbsp;&nbsp;&nbsp;'
     +'<input id="del'+real_pos+'" type="checkbox" name="del'+real_pos+'" value="1" onClick="del_click('+"'"+real_pos+"'"+'); build_pos_sel(); objs[selectedid].reset_dom();" /> '
-    +'<img src="img/garbage.gif" width="11" height="12" alt="'+pt_del_txt+'" title="'+pt_del_txt+'">'
+    +'<img src="/typo3conf/ext/mwimagemap/mod1/img/garbage.gif" width="11" height="12" alt="'+pt_del_txt+'" title="'+pt_del_txt+'">'
 	  +'</div>'
     +pt_x_txt+'<input type="text" id="xpos'+real_pos+'" name="xpos'+real_pos+'" value="'+document.getElementById('xpos0').value+'" size="4" onChange="objs[selectedid].reset_dom();" /><br />'
     +pt_y_txt+'<input type="text" id="ypos'+real_pos+'" name="ypos'+real_pos+'" value="'+document.getElementById('ypos0').value+'" size="4" onChange="objs[selectedid].reset_dom();" />';
@@ -58,7 +58,7 @@ function add_point()
 		el.setAttributeNode(at);
 		elsub = document.createElement('img');
 		at = document.createAttribute('src');
-		at.nodeValue = "img/pencil.gif";
+		at.nodeValue = "/typo3conf/ext/mwimagemap/mod1/img/pencil.gif";
 		elsub.setAttributeNode(at);
 		at = document.createAttribute('id');
 		at.nodeValue = "rpoly"+real_pos;
@@ -87,7 +87,7 @@ function add_point()
 		
 		elsub = document.createElement('img');
 		at = document.createAttribute('src');
-		at.nodeValue = "img/garbage.gif";
+		at.nodeValue = "/typo3conf/ext/mwimagemap/mod1/img/garbage.gif";
 		elsub.setAttributeNode(at);
 		at = document.createAttribute('alt');
 		at.nodeValue = pt_del_txt;
@@ -246,9 +246,9 @@ function rename_pt_tbl( pos )
       var str = '<td id="p_'+(i+1)+'" style="border:1px solid #999999;padding:5px;width:20%;background-color:#EDE9E5" onMouseOver="Javascript:tbg_ov3(this)" onMouseOut="Javascript:tbg_out3(this)">'
       +'<input name="hidden" type="hidden" id="persistent'+(i+1)+'" value="'+document.getElementById('persistent'+i).value+'" />'
       +'<div id="pt_div'+(i+1)+'" style="padding-bottom:7px;font-weight:bold;">'+pt_num_txt+(i+1)+':</div>'
-      +'<div style="padding-bottom:5px;white-space:nowrap;"> <img src="img/pencil.gif" id="rpoly'+(i+1)+'" width="14" height="14" onClick="myrpoly('+(i+1)+'); objs[selectedid].reset_dom();">&nbsp;&nbsp;&nbsp;&nbsp;'
+      +'<div style="padding-bottom:5px;white-space:nowrap;"> <img src="/typo3conf/ext/mwimagemap/mod1/img/pencil.gif" id="rpoly'+(i+1)+'" width="14" height="14" onClick="myrpoly('+(i+1)+'); objs[selectedid].reset_dom();">&nbsp;&nbsp;&nbsp;&nbsp;'
       +'<input id="del'+(i+1)+'" type="checkbox" name="del'+(i+1)+'" value="1" onClick="del_click('+"'"+(i+1)+"'"+'); build_pos_sel(); objs[selectedid].reset_dom();" '+(document.getElementById('del'+i).checked?' checked':'')+' /> '
-      +'<img src="img/garbage.gif" width="11" height="12" alt="'+pt_del_txt+'" title="'+pt_del_txt+'">'
+      +'<img src="/typo3conf/ext/mwimagemap/mod1/img/garbage.gif" width="11" height="12" alt="'+pt_del_txt+'" title="'+pt_del_txt+'">'
 	    +'</div>'
       +pt_x_txt+'<input type="text" id="xpos'+(i+1)+'" name="xpos'+(i+1)+'" value="'+document.getElementById('xpos'+i).value+'" size="4" onChange="objs[selectedid].reset_dom();" /><br />'
       +pt_y_txt+'<input type="text" id="ypos'+(i+1)+'" name="ypos'+(i+1)+'" value="'+document.getElementById('ypos'+i).value+'" size="4" onChange="objs[selectedid].reset_dom();" />'
@@ -283,9 +283,9 @@ try {
     var str = '<td id="p_'+i1+'" style="border:1px solid #999999;padding:5px;width:20%;background-color:#EDE9E5" onMouseOver="Javascript:tbg_ov3(this)" onMouseOut="Javascript:tbg_out3(this)">'
     +'<input name="hidden" type="hidden" id="persistent'+i1+'" value="1" />'
     +'<div id="pt_div'+i1+'" style="padding-bottom:7px;font-weight:bold;">'+pt_num_txt+i1+':</div>'
-    +'<div style="padding-bottom:5px;white-space:nowrap;"> <img src="img/pencil.gif" id="rpoly'+i1+'" width="14" height="14" onClick="myrpoly('+i1+'); objs[selectedid].reset_dom();">&nbsp;&nbsp;&nbsp;&nbsp;'
+    +'<div style="padding-bottom:5px;white-space:nowrap;"> <img src="/typo3conf/ext/mwimagemap/mod1/img/pencil.gif" id="rpoly'+i1+'" width="14" height="14" onClick="myrpoly('+i1+'); objs[selectedid].reset_dom();">&nbsp;&nbsp;&nbsp;&nbsp;'
     +'<input id="del'+i1+'" type="checkbox" name="del'+i1+'" value="1" onClick="del_click('+"'"+i1+"'"+'); build_pos_sel(); objs[selectedid].reset_dom();" '+(document.getElementById('del'+i).checked?' checked':'')+' /> '
-    +'<img src="img/garbage.gif" width="11" height="12" alt="'+pt_del_txt+'" title="'+pt_del_txt+'">'
+    +'<img src="/typo3conf/ext/mwimagemap/mod1/img/garbage.gif" width="11" height="12" alt="'+pt_del_txt+'" title="'+pt_del_txt+'">'
 	  +'</div>'
     +pt_x_txt+'<input type="text" id="xpos'+i1+'" name="xpos'+i1+'" value="'+document.getElementById('xpos'+i).value+'" size="4" onChange="objs[selectedid].reset_dom();" /><br />'
     +pt_y_txt+'<input type="text" id="ypos'+i1+'" name="ypos'+i1+'" value="'+document.getElementById('ypos'+i).value+'" size="4" onChange="objs[selectedid].reset_dom();" />'

@@ -11,7 +11,7 @@ var hideoptions = '###L_HIDEOPTIONS###';
 	<input type="hidden" name="map_id" value="###MID###" />
 	<input type="hidden" id="type" name="type" value="###VTYPE###" />
 	<input type="hidden" name="id" value="###PATHID###" />	
-	<a href="Javascript:a_toggle('l_area');"><h3 class="uppercase"><img src="img/minus.gif" border="0" id="l_areatoggle" alt="###L_SHOWOPTIONS###" title="###L_HIDEOPTIONS###" /> ###L_EDITAREA###</h3></a>
+	<a href="Javascript:a_toggle('l_area');"><h3 class="uppercase"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="l_areatoggle" alt="###L_SHOWOPTIONS###" title="###L_HIDEOPTIONS###" /> ###L_EDITAREA###</h3></a>
   <table cellpadding="0" id="l_area" cellspacing="0" style="border:1px solid #999999; margin:5px 0px 10px 0px; width:100%;">
     <tr>
       <td valign="top" style="padding:8px;">###L_TYPE###&nbsp;<strong>###DESCRIPT###</strong>
@@ -27,11 +27,11 @@ var hideoptions = '###L_HIDEOPTIONS###';
 				###FRAME###
 				###TYP_SPECIFIC###
 				###TYP_SPECIFIC1###
-				<a href="Javascript:a_toggle('link');"><h3 class="uppercase"><img src="img/minus.gif" border="0" id="linktoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###L_LINK###:</h3></a>
+				<a href="Javascript:a_toggle('link');"><h3 class="uppercase"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="linktoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###L_LINK###:</h3></a>
         <table id="link" cellpadding="0" cellspacing="0" style="display:block;border:1px solid #999999; margin:5px 0px 10px 0px; width:100%;" onMouseOver="Javascript:tbg_ov(this)" onMouseOut="Javascript:tbg_out(this)">
           <tr>
             <td style="padding:5px;"><div>###L_LINK###:</div>
-              <div style="width:100%"><input type="text" id="link" name="link" value="###LINK###" style="width:380px;" />###LINK_FUNC###</div>
+              <div style="width:100%"><input type="text" id="link" name="link" data-formengine-input-name="link" value="###LINK###" style="width:380px;" />###LINK_FUNC###</div>
               <div style="padding-top:10px">###L_PARAM###</div>
               <input type="text" id="param" name="param" value="###PARAM###" style="width:100%;" />
             </td>
@@ -49,7 +49,7 @@ var hideoptions = '###L_HIDEOPTIONS###';
 <!-- ###FE_PART### -->
 <input type="hidden" id="s_bcol" value="###FE_BCOL###" />
 <input type="hidden" id="s_bthc" value="###BT###" />
-<a href="Javascript:a_toggle('feoptions');"><h3 class="uppercase"><img src="img/minus.gif" border="0" id="feoptionstoggle" alt="###L_HIDEOPTIONS###" title="###L_SHOWOPTIONS###" /> ###FE_OPTIONS###</h3></a>
+<a href="Javascript:a_toggle('feoptions');"><h3 class="uppercase"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="feoptionstoggle" alt="###L_HIDEOPTIONS###" title="###L_SHOWOPTIONS###" /> ###FE_OPTIONS###</h3></a>
 <table id="feoptions" style="border:1px solid #999999;width:100%;" onMouseOver="Javascript:tbg_ov(this)" onMouseOut="Javascript:tbg_out(this)">
 	<tr>
 	  <td style="padding:5px;white-space:nowrap;">###L_FE_HIDDEN###:&nbsp;</td>
@@ -78,15 +78,15 @@ var hideoptions = '###L_HIDEOPTIONS###';
 </table>
 <input type="hidden" id="s_bcol" value="###FE_BCOL###" />
 <input type="hidden" id="s_bthc" value="###BT###" />
-<a href="Javascript:a_toggle('cbox');"><h3 class="uppercase"><img src="img/minus.gif" border="0" id="cboxtoggle" alt="###L_HIDEOPTIONS###" title="###L_SHOWOPTIONS###" /> ###CONTENT_BOX###</h3></a>
+<a href="Javascript:a_toggle('cbox');"><h3 class="uppercase"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="cboxtoggle" alt="###L_HIDEOPTIONS###" title="###L_SHOWOPTIONS###" /> ###CONTENT_BOX###</h3></a>
 <table id="cbox" style="border:1px solid #999999;width:100%;" onMouseOver="Javascript:tbg_ov(this)" onMouseOut="Javascript:tbg_out(this)">
 	<tr>
-	  <td style="padding:5px;white-space:nowrap;"><div id="cbwarning" style="float:left;margin-right:7px;display:###L_CBWARNING_DISPLAY###;"><img src="../../../../typo3/gfx/warning.png" alt="" title="###CB_WARNING###" /></div>###L_CB_ID###:&nbsp;</td>
+	  <td style="padding:5px;white-space:nowrap;"><div id="cbwarning" style="float:left;margin-right:7px;display:###L_CBWARNING_DISPLAY###;"><img src="/typo3conf/ext/mwimagemap/mod1/img/warning.png" alt="" title="###CB_WARNING###" /></div>###L_CB_ID###:&nbsp;</td>
 		<td style="padding:5px;width:100%;" colspan="2">
 		<div id="cbtext" style="float:left;width:180px;overflow:hidden;border:1px solid #999999;background-color:#FFFFFF;display:###L_CB_DISPLAY###;margin-right:7px;" title="###L_CB_TEXT###">###L_CB_TEXT###</div>
-		<div id="cbdel" style="float:left;margin-right:7px;display:###L_CB_DISPLAY###;"><a href="Javascript:delcbid()"><img src="../../../../typo3/gfx/close_gray.gif" alt="" title="###DEL_ELEMENT###" /></a></div>
+		<div id="cbdel" style="float:left;margin-right:7px;display:###L_CB_DISPLAY###;"><a href="Javascript:delcbid()"><img src="/typo3conf/ext/mwimagemap/mod1/img/close_gray.gif" alt="" title="###DEL_ELEMENT###" /></a></div>
 		<input type="hidden" id="cbid" name="cbid" value="###CBCID###" />
-		<a href="#" onclick="this.blur(); vHWin=window.open('../../../../typo3/browser.php?mode=db&bparams=cbid|||tt_content,tt_news|','','height=500,width=700,status=0,menubar=0,scrollbars=1');vHWin.focus();return false;"><img src="../../../../typo3/gfx/fileicons/folder.gif" alt="" title="###ADD_ELEMENT###" /></a>
+		<a href="#" onclick="this.blur(); vHWin=window.open('###BROWSERLINK###','','height=500,width=700,status=0,menubar=0,scrollbars=1');vHWin.focus();return false;"><img src="/typo3conf/ext/mwimagemap/mod1/img/folder.gif" alt="" title="###ADD_ELEMENT###" /></a>
 		</td>
 	</tr>
 
@@ -137,7 +137,7 @@ var hideoptions = '###L_HIDEOPTIONS###';
 
 
 <!-- ###FRAME_PART### -->
-				<a href="Javascript:a_toggle('frame');"><h3 class="uppercase"><img src="img/minus.gif" border="0" id="frametoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###L_BORDER###</h3></a>
+				<a href="Javascript:a_toggle('frame');"><h3 class="uppercase"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="frametoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###L_BORDER###</h3></a>
         <script type="Text/Javascript">
 				var ocols  = '###OCOL###';
 				var delcol = '###DELCOL###';
@@ -160,7 +160,7 @@ var hideoptions = '###L_HIDEOPTIONS###';
 <!-- ###FRAME_PART### -->
 
 <!-- ###ADDCOL_PART### -->
-<span style="padding-bottom:8px;visibility:hidden;margin-left:0px;" id="coldel"><a href="Javascript:delCol();"><img src="img/garbage.gif" title="###DELETE###" alt="###DELETE###" border="0" /></a></span>
+<span style="padding-bottom:8px;visibility:hidden;margin-left:0px;" id="coldel"><a href="Javascript:delCol();"><img src="/typo3conf/ext/mwimagemap/mod1/img/garbage.gif" title="###DELETE###" alt="###DELETE###" border="0" /></a></span>
 <input type="hidden" id="addcols" name="addcols" value="" />
 <input type="hidden" id="addcolnames" name="addcolnames" value="" />
 <input type="hidden" id="delcols" name="delcols" value="" />
@@ -208,10 +208,10 @@ var pos_opt_txt = '. ###L_POS###';
 var deleted_pts = 0;
 var pt_deleted_txt = '###L_DELETED###';
 </script>
-<script type="text/javascript" src="js/poly.js"></script>
+<script type="text/javascript" src="/typo3conf/ext/mwimagemap/mod1/js/poly.js"></script>
 <input type="hidden" id="polynum" name="polynum" value="###NUM###" />
 
-  <a href="Javascript:a_toggle('addpoint');"><h3 class="uppercase"><img src="img/minus.gif" border="0" id="addpointtoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###L_ADDPT###:</h3></a>
+  <a href="Javascript:a_toggle('addpoint');"><h3 class="uppercase"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="addpointtoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###L_ADDPT###:</h3></a>
   <table id="addpoint" cellpadding="0" cellspacing="0" style="display:block;border:1px solid #999999; margin:5px 0px 10px 0px; width:100%;" onMouseOver="Javascript:tbg_ov(this);objs[selectedid].reset_dom();" onMouseOut="Javascript:tbg_out(this)">
 	<tr>
 	  <td style="padding:5px;" colspan="2"><input type="checkbox" id="rpoly" name="rpoly" value="add" onClick="myrpoly(0); objs[selectedid].reset_dom();" checked="checked" />&nbsp;###POLYCLICK###</td>
@@ -255,9 +255,9 @@ build_pos_sel();
 <td id="p_###NUM###" style="border:1px solid #999999;padding:5px;width:20%;background-color:#EDE9E5" onMouseOver="Javascript:tbg_ov3(this)" onMouseOut="Javascript:tbg_out3(this)">
   <input name="hidden" type="hidden" id="persistent###NUM###" value="1" />
   <div id="pt_div###NUM###" style="padding-bottom:7px;font-weight:bold;">###L_POINT### ###NUM###:</div>
-  <div style="padding-bottom:5px;white-space:nowrap;"> <img src="img/pencil.gif" id="rpoly###NUM###" width="14" height="14" onClick="myrpoly(###NUM###); objs[selectedid].reset_dom();">&nbsp;&nbsp;&nbsp;
+  <div style="padding-bottom:5px;white-space:nowrap;"> <img src="/typo3conf/ext/mwimagemap/mod1/img/pencil.gif" id="rpoly###NUM###" width="14" height="14" onClick="myrpoly(###NUM###); objs[selectedid].reset_dom();">&nbsp;&nbsp;&nbsp;
     <input id="del###NUM###" type="checkbox" name="del###NUM###" value="1" onClick="del_click(###NUM###); build_pos_sel(); objs[selectedid].reset_dom();" />
-    <img src="img/garbage.gif" width="11" height="12" alt="###L_DEL###" title="###L_DEL###">
+    <img src="/typo3conf/ext/mwimagemap/mod1/img/garbage.gif" width="11" height="12" alt="###L_DEL###" title="###L_DEL###">
 	</div>
   ###L_XPOS###:&nbsp;<input type="text" id="xpos###NUM###" name="xpos###NUM###" value="###XPOS###" size="4" onFocus="myrpoly(###NUM###); objs[selectedid].reset_dom();" onChange="objs[selectedid].reset_dom();" /><br />
   ###L_YPOS###:&nbsp;<input type="text" id="ypos###NUM###" name="ypos###NUM###" value="###YPOS###" size="4" onFocus="myrpoly(###NUM###); objs[selectedid].reset_dom();" onChange="objs[selectedid].reset_dom();" />
@@ -329,7 +329,7 @@ function imgonclick(Event)
 }
 
 </script>
-<h3 class="uppercase"><a href="Javascript:a_toggle('sizepos');"><img src="img/minus.gif" border="0" id="sizepostoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /></a> ###L_SIZEPOS###</h3>
+<h3 class="uppercase"><a href="Javascript:a_toggle('sizepos');"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="sizepostoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /></a> ###L_SIZEPOS###</h3>
 <table id="sizepos" cellpadding="0" cellspacing="0" style="display:block;border:1px solid #999999; margin:5px 0px 10px 0px; width:100%;" onMouseOver="Javascript:tbg_ov(this)" onMouseOut="Javascript:tbg_out(this)">
   <tr>
     <td style="padding:5px;">
@@ -442,7 +442,7 @@ function imgonclick(Event)
 }
 
 </script>
-<h3 class="uppercase"><a href="Javascript:a_toggle('sizepos');"><img src="img/minus.gif" border="0" id="sizepostoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /></a> ###L_SIZEPOS###</h3>
+<h3 class="uppercase"><a href="Javascript:a_toggle('sizepos');"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="sizepostoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /></a> ###L_SIZEPOS###</h3>
 <table id="sizepos" cellpadding="0" cellspacing="0" style="display:block;border:1px solid #999999; margin:5px 0px 10px 0px; width:100%;" onMouseOver="Javascript:tbg_ov(this)" onMouseOut="Javascript:tbg_out(this)">
   <tr>
     <td style="padding:5px;">
@@ -484,7 +484,7 @@ function imgonclick(Event)
 
 <!-- ###ADD_PART### -->
 ###CHGSCRIPT###
-<a href="Javascript:a_toggle('area_add');"><h3 class="uppercase"><img src="img/minus.gif" border="0" id="area_addtoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###ADDLINKAREA###</h3></a>
+<a href="Javascript:a_toggle('area_add');"><h3 class="uppercase"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="area_addtoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###ADDLINKAREA###</h3></a>
 <form id="add_form" name="add_form" action="" method="post" onSubmit="return check_chg_vars();" style="margin:0px;padding:0px;">
   <input type="hidden" name="area_page" value="1" />
   <input type="hidden" name="map_id" value="###MID###" />
@@ -510,7 +510,7 @@ function imgonclick(Event)
 		  </td>
       <td style="padding:0px 10px 0px 0px;">
 				<div style="float:left; width:123px;">
-          <input type="text" name="link" style="width:120px;" />
+          <input type="text" name="link" style="width:120px;" data-formengine-input-name="link"/>
         </div>
         <div style="float:left; width:30px;">###LINK_FUNC###</div>
 			</td>
@@ -528,7 +528,7 @@ function imgonclick(Event)
 var showoptions = '###L_SHOWOPTIONS###';
 var hideoptions = '###L_HIDEOPTIONS###';
 </script>
-<a href="Javascript:a_toggle('arealist');"><h3 class="uppercase"><img src="img/minus.gif" border="0" id="arealisttoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###AREALIST###</h3></a>
+<a href="Javascript:a_toggle('arealist');"><h3 class="uppercase"><img src="/typo3conf/ext/mwimagemap/mod1/img/minus.gif" border="0" id="arealisttoggle" alt="###L_SHOWOPTIONS###" title="###L_SHOWOPTIONS###" /> ###AREALIST###</h3></a>
     <table cellpadding="0" id="arealist" cellspacing="0" style="border:1px solid #999999; margin:5px 0px 10px 0px; width:100%;">
       <tr>
         <td valign="top" style="padding:8px;width:451px;">
@@ -582,7 +582,7 @@ function set_areaids()
 <!-- ###LIST_PART### -->
 
 <!-- ###LIST_ITEM### -->
-<table id="x_area_###AID###" cellpadding="0" cellspacing="0" style="border:1px solid #999999; margin:5px 0px 10px 0px; width:100%;" onclick="Javascript:goClick(###NUM###,'index.php?area_page=1&area_id=###AID###&map_id=###MID###&id=###PATHID###',0)" onMouseOver="Javascript:tbg_ov2(this,'i_###AID###','###XTYPE###')" onMouseOut="Javascript:tbg_out2(this,'i_###AID###','###XTYPE###')">
+<table id="x_area_###AID###" cellpadding="0" cellspacing="0" style="border:1px solid #999999; margin:5px 0px 10px 0px; width:100%;" onclick="Javascript:goClick(###NUM###,'###MODLINK###',0)" onMouseOver="Javascript:tbg_ov2(this,'i_###AID###','###XTYPE###')" onMouseOut="Javascript:tbg_out2(this,'i_###AID###','###XTYPE###')">
   <tr>
     <td style="padding:5px;" valign="top">
 		  <form method="post" name="f_###AID###" action="">
@@ -594,7 +594,7 @@ function set_areaids()
         <table style="width:100%;" border="0" cellspacing="0" cellpadding="0">
           <tr>
             <td width="5%" style="padding-bottom:2px;"><input type="checkbox" value="###AID###" id="sel_###NUM###" onclick="Javascript:goClick(0,'#',1)" /></td>
-            <td width="95%" valign="bottom">&nbsp;<a title="###L_TYPE###: ###TYPE###" href="index.php?area_page=1&area_id=###AID###&map_id=###MID###&id=###PATHID###" onClick="return check_chg_vars();"><img src="img/###XTYPE###_1.gif" id="i_###AID###" style="background-color:###FCOLOR###;" alt="###L_TYPE###: ###TYPE###" title="###L_TYPE###: ###TYPE###">&nbsp;<strong>###DESCRIPT###&nbsp;</strong></a><a href="Javascript:document.forms['f_###AID###'].action.value='del';document.forms['f_###AID###'].submit()" onClick="Javascript:goClick(0,'#',1);return check_chg_vars();"><img src="img/garbage.gif" title="###DELETE###" alt="###DELETE###" border="0" /></a></td>
+            <td width="95%" valign="bottom">&nbsp;<a title="###L_TYPE###: ###TYPE###" href="###MODLINK###" onClick="return check_chg_vars();"><img src="/typo3conf/ext/mwimagemap/mod1/img/###XTYPE###_1.gif" id="i_###AID###" style="background-color:###FCOLOR###;" alt="###L_TYPE###: ###TYPE###" title="###L_TYPE###: ###TYPE###">&nbsp;<strong>###DESCRIPT###&nbsp;</strong></a><a href="Javascript:document.forms['f_###AID###'].action.value='del';document.forms['f_###AID###'].submit()" onClick="Javascript:goClick(0,'#',1);return check_chg_vars();"><img src="/typo3conf/ext/mwimagemap/mod1/img/garbage.gif" title="###DELETE###" alt="###DELETE###" border="0" /></a></td>
           </tr>
           <tr>
             <td colspan="2"><div style="padding:7px 0px 0px 0px;">###L_LINK###:&nbsp;<a href="###LINK###" target="_blank">###LINK###</a></div></td>
@@ -623,7 +623,7 @@ m_toggle["d"] = "###TOGGLED###";
 		  <td width="60"><strong>&nbsp;&nbsp;y:&nbsp;</strong></td>
 		  <td width="60"><div id="yy">0</div></td>
 			<td style="width:100%">&nbsp;</td>
-			<td style="padding:0px;"><a href="#" onclick="Javascript:togglePos()"><img id="mposimg" src="img/d.gif" border="0" alt="###TOGGLED###" title="###TOGGLED###" /></a></td>
+			<td style="padding:0px;"><a href="#" onclick="Javascript:togglePos()"><img id="mposimg" src="/typo3conf/ext/mwimagemap/mod1/img/d.gif" border="0" alt="###TOGGLED###" title="###TOGGLED###" /></a></td>
 	  </tr>
   </table>
 </div>
@@ -632,10 +632,10 @@ m_toggle["d"] = "###TOGGLED###";
 <!-- ###IMG_PART### -->
 
 <!-- ###JS_PART### -->
-<script type="text/javascript" src="js/wz_jsgraphics.js"></script>
-<script type="text/javascript" src="js/draw_objects.js"></script>
-<script type="text/javascript" src="colpicker/color_functions.js"></script>
-<script type="text/javascript" src="colpicker/js_color_picker_v2.js"></script>
+<script type="text/javascript" src="/typo3conf/ext/mwimagemap/mod1/js/wz_jsgraphics.js"></script>
+<script type="text/javascript" src="/typo3conf/ext/mwimagemap/mod1/js/draw_objects.js"></script>
+<script type="text/javascript" src="/typo3conf/ext/mwimagemap/mod1/colpicker/color_functions.js"></script>
+<script type="text/javascript" src="/typo3conf/ext/mwimagemap/mod1/colpicker/js_color_picker_v2.js"></script>
 <script type="text/javascript">
 
 var wrong_coord = false;
@@ -895,7 +895,8 @@ function is_a_obj(Event) {
 }
 
 function edit_obj( id ) {
-	window.location.href = "index.php?area_page=1&map_id=###MID###&area_id="+id+"&id=###PATHID###";
+//    window.location.href = "index.php?area_page=1&map_id=###MID###&area_id="+id+"&id=###PATHID###";
+    window.location.href = "###MODLINK###&area_id="+id;
 }
 
 function change_blink() {
