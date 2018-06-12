@@ -370,7 +370,7 @@ class tx_mwimagemap_pi1 extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 		$mA['###CSS_BORDER###'] = (!empty($this->content_row[6]) && !empty($this->content_row[5])) ? 'border:'.$this->content_row[6].'px solid '.$this->content_row[5].';' : '';
 		$mA['###CSS_ADDITIONAL###'] = $this->add_cbox_css;
 		$tt_content_conf = array('tables' => 'tt_content', 'source' => $this->content_row[0], 'dontCheckPid' => 1);
-		$mA['###CONTENT###'] = $this->cObj->RECORDS($tt_content_conf);
+		$mA['###CONTENT###'] = $this->cObj->cObjGetSingle('RECORDS',$tt_content_conf);
 		return $this->cObj->substituteMarkerArray($this->cboxsubpart, $mA);
 	}
 }

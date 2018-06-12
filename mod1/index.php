@@ -32,6 +32,7 @@ use \TYPO3\CMS\Core\Utility\GeneralUtility;
 
 if (!isset($MCONF)) {
     require('conf.php');
+    $GLOBALS['MCONF'] = $MCONF;
 }
 
 $GLOBALS['LANG']->includeLLFile('EXT:mwimagemap/mod1/locallang_mod.xml');
@@ -124,9 +125,9 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
 		$this->content.=$this->doc->startPage($GLOBALS['LANG']->getLL("title"));
 		$this->content.=$this->doc->header($GLOBALS['LANG']->getLL("title"));
-		$this->content.=$this->doc->spacer(5);
+		$this->content.='<div style="padding-top: 5px;">';
 		$this->content.= $this->doc->section('', $this->doc->funcMenu($headerSection, BackendUtility::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'])));
-		$this->content.=$this->doc->divider(5);
+		$this->content.='<hr style="margin-top: 5px; margin-bottom: 5px;" /></div>';
 
 		$carr = explode('<body', $this->content);
 		$cpos = strpos($carr[1], '>');
@@ -139,9 +140,9 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 
 		// ShortCut
 		if ($GLOBALS['BE_USER']->mayMakeShortcut())	{	
-			$this->content.=$this->doc->spacer(20).$this->doc->section("", $this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name']));
+			$this->content.='<div style="padding-top: 20px;">'.$this->doc->section("", $this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name']));
 		}
-		$this->content.=$this->doc->spacer(10);
+		$this->content.='<div style="padding-top: 10px;">';
 	}
 
 	/**
@@ -1689,12 +1690,14 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 		$formattedNumber = str_repeat('0', ($intPart + -1 - floor(log10($formattedNumber)))).$formattedNumber;
 		return $formattedNumber;
 	}
-}
 
-// Make instance:
-$SOBE = GeneralUtility::makeInstance('tx_mwimagemap_module1');
-$SOBE->init();
-$SOBE->main();
-$SOBE->printContent();
+	public function __invoke()
+    {
+        $SOBE = GeneralUtility::makeInstance('tx_mwimagemap_module1');
+        $SOBE->init();
+        $SOBE->main();
+        $SOBE->printContent();
+    }
+}
 
 ?>

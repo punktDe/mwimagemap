@@ -4,8 +4,9 @@ if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
 
 if (TYPO3_MODE=='BE')	{
-    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule('file', 'txmwimagemapM1', '', \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) ."mod1/");
+    \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule('file', 'txmwimagemapM1', '','',  ['routeTarget' =>\tx_mwimagemap_module1::class, 'name' => 'file_txmwimagemapM1', 'icon' => 'EXT:' . $_EXTKEY . '/mod1/moduleicon.gif']);
     $TBE_MODULES_EXT['xMOD_db_new_content_el']['addElClasses']['tx_mwimagemap_pi1_wizicon'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY).'pi1/class.tx_mwimagemap_pi1_wizicon.php';
+    $GLOBALS['TBE_MODULES']['_configuration']['file_txmwimagemapM1']['labels'] = 'LLL:EXT:mwimagemap/locallang_db.php:tt_content.list_type_pi1';
 }
 
 require_once(\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('mwimagemap').'config_inc.php');
