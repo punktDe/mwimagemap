@@ -565,7 +565,7 @@ class tx_mwimagemap_module1 extends \TYPO3\CMS\Backend\Module\BaseScriptClass {
 				$link = trim(GeneralUtility::_GP('link'));
 				if ( $link === '' ) { $link = '#'; }
 				if ( ! $db->exec_INSERTquery( 'tx_mwimagemap_area', array( 'type' => intval(GeneralUtility::_GP('type')),
-					'link' => $link, 'description' => $desc, 'mid' => $map_id, 'color' => $this->extConf['def_color1'] ) ) ) {
+					'link' => $link, 'description' => $desc, 'mid' => $map_id, 'color' => $this->extConf['def_color1'], 'param' => '') ) ) {
 					$this->err .= 'add sql_error: '.$db->sql_error().'<br />';
 					break;
 				}
